@@ -15,7 +15,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var tableView: UITableView!
     
-    var alarmScheduler: AlarmSchedulerDelegate = Scheduler()
+    var alarmScheduler = Scheduler()
     var alarmModel: Alarms = Alarms()
     var segueInfo: SegueInfo!
     var snoozeEnabled: Bool = false
@@ -83,7 +83,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         
         var cell = tableView.dequeueReusableCell(withIdentifier: Id.settingIdentifier)
         if(cell == nil) {
-        cell = UITableViewCell(style: UITableViewCellStyle.value1, reuseIdentifier: Id.settingIdentifier)
+        cell = UITableViewCell(style: UITableViewCell.CellStyle.value1, reuseIdentifier: Id.settingIdentifier)
         }
         if indexPath.section == 0 {
             
@@ -91,23 +91,23 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
                 
                 cell!.textLabel!.text = "Repeat"
                 cell!.detailTextLabel!.text = WeekdaysViewController.repeatText(weekdays: segueInfo.repeatWeekdays)
-                cell!.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+                cell!.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             }
             else if indexPath.row == 1 {
                 cell!.textLabel!.text = "Label"
                 cell!.detailTextLabel!.text = segueInfo.label
-                cell!.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+                cell!.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             }
             else if indexPath.row == 2 {
                 cell!.textLabel!.text = "Sound"
                 cell!.detailTextLabel!.text = segueInfo.mediaLabel
-                cell!.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+                cell!.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             }
             else if indexPath.row == 3 {
                
                 cell!.textLabel!.text = "Snooze"
                 let sw = UISwitch(frame: CGRect())
-                sw.addTarget(self, action: #selector(AlarmAddEditViewController.snoozeSwitchTapped(_:)), for: UIControlEvents.touchUpInside)
+                sw.addTarget(self, action: #selector(AlarmAddEditViewController.snoozeSwitchTapped(_:)), for: UIControl.Event.touchUpInside)
                 
                 if snoozeEnabled {
                    sw.setOn(true, animated: false)
@@ -118,7 +118,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         }
         else if indexPath.section == 1 {
             cell = UITableViewCell(
-                style: UITableViewCellStyle.default, reuseIdentifier: Id.settingIdentifier)
+                style: UITableViewCell.CellStyle.default, reuseIdentifier: Id.settingIdentifier)
             cell!.textLabel!.text = "Delete Alarm"
             cell!.textLabel!.textAlignment = .center
             cell!.textLabel!.textColor = UIColor.red

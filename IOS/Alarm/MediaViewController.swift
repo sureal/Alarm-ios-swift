@@ -84,7 +84,7 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
         var cell = tableView.dequeueReusableCell(withIdentifier: Id.musicIdentifier)
         if(cell == nil) {
             cell = UITableViewCell(
-                style: UITableViewCellStyle.default, reuseIdentifier: Id.musicIdentifier)
+                style: UITableViewCell.CellStyle.default, reuseIdentifier: Id.musicIdentifier)
         }
         if indexPath.section == 0 {
             if indexPath.row == 0 {
@@ -93,12 +93,12 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
         }
         else if indexPath.section == 1 {
             cell!.textLabel!.text = "Vibration"
-            cell!.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+            cell!.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
         }
         else if indexPath.section == 2 {
             if indexPath.row == 0 {
                 cell!.textLabel!.text = "Pick a song"
-                cell!.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+                cell!.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             }
         }
         else if indexPath.section == 3 {
@@ -110,7 +110,7 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
             }
             
             if cell!.textLabel!.text == mediaLabel {
-                cell!.accessoryType = UITableViewCellAccessoryType.checkmark
+                cell!.accessoryType = UITableViewCell.AccessoryType.checkmark
             }
         }
         
@@ -130,7 +130,7 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
         }
         else if indexPath.section == 3 {
             let cell = tableView.cellForRow(at: indexPath)
-            cell?.accessoryType = UITableViewCellAccessoryType.checkmark
+            cell?.accessoryType = UITableViewCell.AccessoryType.checkmark
             mediaLabel = cell?.textLabel?.text!
             cell?.setSelected(true, animated: true)
             cell?.setSelected(false, animated: true)
@@ -138,7 +138,7 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
             for c in cells {
                 let section = tableView.indexPath(for: c)?.section
                 if (section == indexPath.section && c != cell) {
-                    c.accessoryType = UITableViewCellAccessoryType.none
+                    c.accessoryType = UITableViewCell.AccessoryType.none
                 }
             }
         }
@@ -151,8 +151,15 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
             let aMediaItem = mediaItemCollection.items[0]
         
             self.mediaItem = aMediaItem
-            mediaID = (self.mediaItem?.value(forProperty: MPMediaItemPropertyPersistentID)) as! String
-            //self.dismiss(animated: true, completion: nil)
+            
+            if let mediaItem = self.mediaItem {
+                
+                if let mediaIdentifier = (mediaItem.value(forProperty: MPMediaItemPropertyPersistentID)) as? String {
+                    self.mediaID = mediaIdentifier
+                    //self.dismiss(animated: true, completion: nil)
+                }
+            }
+            
         }
     }
     

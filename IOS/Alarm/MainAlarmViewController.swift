@@ -11,7 +11,7 @@ import UIKit
 class MainAlarmViewController: UITableViewController{
    
     var alarmDelegate: AlarmApplicationDelegate = AppDelegate()
-    var alarmScheduler: AlarmSchedulerDelegate = Scheduler()
+    var alarmScheduler = Scheduler()
     var alarmModel: Alarms = Alarms()
     
     override func viewDidLoad() {
@@ -51,10 +51,10 @@ class MainAlarmViewController: UITableViewController{
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Return the number of rows in the section.
         if alarmModel.count == 0 {
-            tableView.separatorStyle = UITableViewCellSeparatorStyle.none
+            tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
         }
         else {
-            tableView.separatorStyle = UITableViewCellSeparatorStyle.singleLine
+            tableView.separatorStyle = UITableViewCell.SeparatorStyle.singleLine
         }
         return alarmModel.count
     }
@@ -69,15 +69,15 @@ class MainAlarmViewController: UITableViewController{
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: Id.alarmCellIdentifier)
         if (cell == nil) {
-            cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: Id.alarmCellIdentifier)
+            cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: Id.alarmCellIdentifier)
         }
         //cell text
         cell!.selectionStyle = .none
         cell!.tag = indexPath.row
         let alarm: Alarm = alarmModel.alarms[indexPath.row]
-        let amAttr: [NSAttributedStringKey : Any] = [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue) : UIFont.systemFont(ofSize: 20.0)]
+        let amAttr: [NSAttributedString.Key : Any] = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue) : UIFont.systemFont(ofSize: 20.0)]
         let str = NSMutableAttributedString(string: alarm.formattedTime, attributes: amAttr)
-        let timeAttr: [NSAttributedStringKey : Any] = [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue) : UIFont.systemFont(ofSize: 45.0)]
+        let timeAttr: [NSAttributedString.Key : Any] = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue) : UIFont.systemFont(ofSize: 45.0)]
         str.addAttributes(timeAttr, range: NSMakeRange(0, str.length-2))
         cell!.textLabel?.attributedText = str
         cell!.detailTextLabel?.text = alarm.label
@@ -87,7 +87,7 @@ class MainAlarmViewController: UITableViewController{
         
         //tag is used to indicate which row had been touched
         sw.tag = indexPath.row
-        sw.addTarget(self, action: #selector(MainAlarmViewController.switchTapped(_:)), for: UIControlEvents.valueChanged)
+        sw.addTarget(self, action: #selector(MainAlarmViewController.switchTapped(_:)), for: UIControl.Event.valueChanged)
         if alarm.enabled {
             cell!.backgroundColor = UIColor.white
             cell!.textLabel?.alpha = 1.0
@@ -121,7 +121,7 @@ class MainAlarmViewController: UITableViewController{
     }
 
     // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let index = indexPath.row
             alarmModel.alarms.remove(at: index)
@@ -155,7 +155,12 @@ class MainAlarmViewController: UITableViewController{
         }
         else if segue.identifier == Id.editSegueIdentifier {
             addEditController.navigationItem.title = "Edit Alarm"
-            addEditController.segueInfo = sender as! SegueInfo
+            
+            if let segueInfo = sender as? SegueInfo  {
+                addEditController.segueInfo = segueInfo
+            } else {
+                print("SHIT!")
+            }
         }
     }
     

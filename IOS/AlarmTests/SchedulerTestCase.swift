@@ -25,11 +25,7 @@ class SchedulerTestCase: XCTestCase {
         super.tearDown()
     }
     
-    func testSetupNotificationSettings() {
-        let settings = scheduler.setupNotificationSettings()
-        XCTAssert((UInt8(settings.types.rawValue) & UInt8(UIUserNotificationType.alert.rawValue)) == UInt8(UIUserNotificationType.alert.rawValue))
-        XCTAssert((UInt8(settings.types.rawValue) & UInt8(UIUserNotificationType.sound.rawValue)) == UInt8(UIUserNotificationType.sound.rawValue))
-    }
+
     
     func testPerformanceExample() {
         // This is an example of a performance test case.

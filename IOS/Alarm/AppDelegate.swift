@@ -10,19 +10,25 @@ import UIKit
 import Foundation
 import AudioToolbox
 import AVFoundation
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, AlarmApplicationDelegate{
+class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, AlarmApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
     var audioPlayer: AVAudioPlayer?
-    let alarmScheduler: AlarmSchedulerDelegate = Scheduler()
+    let alarmScheduler = Scheduler()
     var alarmModel: Alarms = Alarms()
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        // set app delegate as notification handler (for now)
+        UNUserNotificationCenter.current().delegate = self
+
         var error: NSError?
         do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.duckOthers)
+            //.setCategory(convertFromAVAudioSessionCategory(AVAudioSession.Category.playback))
         } catch let error1 as NSError{
             error = error1
             print("could not set session. err:\(error!.localizedDescription)")
@@ -34,97 +40,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, Al
             print("could not active session. err:\(error!.localizedDescription)")
         }
         window?.tintColor = UIColor.red
-        
+
         return true
     }
-   
-    //receive local notification when app in foreground
-    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        
-        //show an alert window
-        let storageController = UIAlertController(title: "Alarm", message: nil, preferredStyle: .alert)
-        var isSnooze: Bool = false
-        var soundName: String = ""
-        var index: Int = -1
-        if let userInfo = notification.userInfo {
-            isSnooze = userInfo["snooze"] as! Bool
-            soundName = userInfo["soundName"] as! String
-            index = userInfo["index"] as! Int
-        }
-        
-        playSound(soundName)
-        //schedule notification for snooze
-        if isSnooze {
-            let snoozeOption = UIAlertAction(title: "Snooze", style: .default) {
-                (action:UIAlertAction)->Void in self.audioPlayer?.stop()
-                self.alarmScheduler.setNotificationForSnooze(snoozeMinute: 9, soundName: soundName, index: index)
-            }
-            storageController.addAction(snoozeOption)
-        }
-        let stopOption = UIAlertAction(title: "OK", style: .default) {
-            (action:UIAlertAction)->Void in self.audioPlayer?.stop()
-            AudioServicesRemoveSystemSoundCompletion(kSystemSoundID_Vibrate)
-            self.alarmModel = Alarms()
-            self.alarmModel.alarms[index].onSnooze = false
-            //change UI
-            var mainVC = self.window?.visibleViewController as? MainAlarmViewController
-            if mainVC == nil {
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                mainVC = storyboard.instantiateViewController(withIdentifier: "Alarm") as? MainAlarmViewController
-            }
-            mainVC!.changeSwitchButtonState(index: index)
-        }
-        
-        storageController.addAction(stopOption)
-        window?.visibleViewController?.navigationController?.present(storageController, animated: true, completion: nil)
-    }
-    
-    //snooze notification handler when app in background
-    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: @escaping () -> Void) {
-        var index: Int = -1
-        var soundName: String = ""
-        if let userInfo = notification.userInfo {
-            soundName = userInfo["soundName"] as! String
-            index = userInfo["index"] as! Int
-        }
-        self.alarmModel = Alarms()
-        self.alarmModel.alarms[index].onSnooze = false
-        if identifier == Id.snoozeIdentifier {
-            alarmScheduler.setNotificationForSnooze(snoozeMinute: 9, soundName: soundName, index: index)
-            self.alarmModel.alarms[index].onSnooze = true
-        }
-        completionHandler()
-    }
-    
-    //print out all registed NSNotification for debug
-    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
-        
-        print(notificationSettings.types.rawValue)
-    }
-    
+
+
     //AlarmApplicationDelegate protocol
     func playSound(_ soundName: String) {
-        
+
         //vibrate phone first
         AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
         //set vibrate callback
         AudioServicesAddSystemSoundCompletion(SystemSoundID(kSystemSoundID_Vibrate),nil,
-            nil,
-            { (_:SystemSoundID, _:UnsafeMutableRawPointer?) -> Void in
-                AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            },
-            nil)
+                nil,
+                { (_:SystemSoundID, _:UnsafeMutableRawPointer?) -> Void in
+                    AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+                },
+                nil)
         let url = URL(fileURLWithPath: Bundle.main.path(forResource: soundName, ofType: "mp3")!)
-        
+
         var error: NSError?
-        
+
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
         } catch let error1 as NSError {
             error = error1
             audioPlayer = nil
         }
-        
+
         if let err = error {
             print("audioPlayer error \(err.localizedDescription)")
             return
@@ -132,21 +75,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, Al
             audioPlayer!.delegate = self
             audioPlayer!.prepareToPlay()
         }
-        
+
         //negative number means loop infinity
         audioPlayer!.numberOfLoops = -1
         audioPlayer!.play()
     }
-    
+
     //AVAudioPlayerDelegate protocol
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        
+
     }
-    
+
     func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
-        
+
     }
-   
+
     //UIApplicationDelegate protocol
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -172,9 +115,78 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, Al
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-    
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+
+        print("userNotificationCenter:willPresent:withCompletionHandler")
+        // for notifications that are delivered to a foreground app:
 
 
+        //show an alert window
+        let storageController = UIAlertController(title: "Alarm", message: nil, preferredStyle: .alert)
+        var isSnooze: Bool = false
+        var soundName: String = ""
+        var index: Int = -1
+        let userInfo = notification.request.content.userInfo
+        isSnooze = userInfo["snooze"] as! Bool
+        soundName = userInfo["soundName"] as! String
+        index = userInfo["index"] as! Int
 
+
+        playSound(soundName)
+        //schedule notification for snooze
+        if isSnooze {
+            let snoozeOption = UIAlertAction(title: "Snooze", style: .default) {
+                (action:UIAlertAction)->Void in self.audioPlayer?.stop()
+                self.alarmScheduler.setNotificationForSnooze(snoozeMinute: 9, soundName: soundName, index: index)
+            }
+            storageController.addAction(snoozeOption)
+        }
+        let stopOption = UIAlertAction(title: "OK", style: .default) {
+            (action:UIAlertAction)->Void in self.audioPlayer?.stop()
+            AudioServicesRemoveSystemSoundCompletion(kSystemSoundID_Vibrate)
+            self.alarmModel = Alarms()
+            self.alarmModel.alarms[index].onSnooze = false
+            //change UI
+            var mainVC = self.window?.visibleViewController as? MainAlarmViewController
+            if mainVC == nil {
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                mainVC = storyboard.instantiateViewController(withIdentifier: "Alarm") as? MainAlarmViewController
+            }
+            mainVC!.changeSwitchButtonState(index: index)
+        }
+
+        storageController.addAction(stopOption)
+        window?.visibleViewController?.navigationController?.present(storageController, animated: true, completion: nil)
+
+        completionHandler(UNNotificationPresentationOptions.sound)
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+
+        print("userNotificationCenter:didReceive")
+        // to let your app know which action was selected by the user for a given notification:
+
+
+        print("Hey, I received a local notification in background due to user interaction")
+
+        var index: Int = -1
+        var soundName: String = ""
+        let userInfo = response.notification.request.content.userInfo
+        soundName = userInfo["soundName"] as! String
+        index = userInfo["index"] as! Int
+
+        self.alarmModel = Alarms()
+        self.alarmModel.alarms[index].onSnooze = false
+        if response.actionIdentifier == Id.snoozeIdentifier {
+            alarmScheduler.setNotificationForSnooze(snoozeMinute: 9, soundName: soundName, index: index)
+            self.alarmModel.alarms[index].onSnooze = true
+        }
+
+        completionHandler()
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
+        print("userNotificationCenter:openSettingsFor")
+    }
 }
-

@@ -8,51 +8,71 @@
 
 import Foundation
 import UIKit
+import UserNotifications
 
 
-class Scheduler : AlarmSchedulerDelegate
+class Scheduler
 {
     var alarmModel: Alarms = Alarms()
-    func setupNotificationSettings() -> UIUserNotificationSettings {
+    
+    func setupNotificationSettings() {
         var snoozeEnabled: Bool = false
-        if let n = UIApplication.shared.scheduledLocalNotifications {
-            if let result = minFireDateWithIndex(notifications: n) {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { (pendingNotificationRequests) in
+            
+            if let result = self.minFireDateWithIndex(notificationRequests: pendingNotificationRequests) {
                 let i = result.1
-                snoozeEnabled = alarmModel.alarms[i].snoozeEnabled
+                snoozeEnabled = self.alarmModel.alarms[i].snoozeEnabled
             }
         }
+        
         // Specify the notification types.
-        let notificationTypes: UIUserNotificationType = [UIUserNotificationType.alert, UIUserNotificationType.sound]
+        //let notificationTypes: UIUserNotificationType = [UIUserNotificationType.alert, UIUserNotificationType.sound]
         
         // Specify the notification actions.
-        let stopAction = UIMutableUserNotificationAction()
-        stopAction.identifier = Id.stopIdentifier
-        stopAction.title = "OK"
-        stopAction.activationMode = UIUserNotificationActivationMode.background
-        stopAction.isDestructive = false
-        stopAction.isAuthenticationRequired = false
+        let stopAction = UNNotificationAction(identifier: Id.stopIdentifier, title: "OK", options: [])
+        //stopAction.activationMode = UIUserNotificationActivationMode.background
+        //stopAction.isDestructive = false
+        //stopAction.isAuthenticationRequired = false
         
-        let snoozeAction = UIMutableUserNotificationAction()
-        snoozeAction.identifier = Id.snoozeIdentifier
-        snoozeAction.title = "Snooze"
-        snoozeAction.activationMode = UIUserNotificationActivationMode.background
-        snoozeAction.isDestructive = false
-        snoozeAction.isAuthenticationRequired = false
+        let snoozeAction = UNNotificationAction(identifier: Id.snoozeIdentifier, title: "Snooze", options: [])
+        //snoozeAction.activationMode = UIUserNotificationActivationMode.background
+        //snoozeAction.isDestructive = false
+        //snoozeAction.isAuthenticationRequired = false
         
-        let actionsArray = snoozeEnabled ? [UIUserNotificationAction](arrayLiteral: snoozeAction, stopAction) : [UIUserNotificationAction](arrayLiteral: stopAction)
-        let actionsArrayMinimal = snoozeEnabled ? [UIUserNotificationAction](arrayLiteral: snoozeAction, stopAction) : [UIUserNotificationAction](arrayLiteral: stopAction)
+        
         // Specify the category related to the above actions.
-        let alarmCategory = UIMutableUserNotificationCategory()
-        alarmCategory.identifier = "myAlarmCategory"
-        alarmCategory.setActions(actionsArray, for: .default)
-        alarmCategory.setActions(actionsArrayMinimal, for: .minimal)
+        var notificationActions = [UNNotificationAction]()
+        if snoozeEnabled {
+            notificationActions.append(snoozeAction)
+        }
+        notificationActions.append(stopAction)
+        // TODO: implement notification delegate to react on customDismissAction
+        let alarmCategory = UNNotificationCategory(identifier: Id.alarmCategoryIdentifier,
+                                                   actions: notificationActions,
+                                                   intentIdentifiers: [],
+                                                   options: .customDismissAction)
+        
+        //alarmCategory.minimalActions = notificationActions
         
         
-        let categoriesForSettings = Set(arrayLiteral: alarmCategory)
+        let notificationCategories = Set(arrayLiteral: alarmCategory)
+        UNUserNotificationCenter.current().setNotificationCategories(notificationCategories)
+        
+        
         // Register the notification settings.
-        let newNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: categoriesForSettings)
-        UIApplication.shared.registerUserNotificationSettings(newNotificationSettings)
-        return newNotificationSettings
+        //let alertNotificationSettings = UNNotificationSettings()
+        
+        //let newNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: categoriesForSettings)
+        // UIApplication.shared.registerUserNotificationSettings(newNotificationSettings)
+       
+        let options: UNAuthorizationOptions = [.alert, .sound];
+        UNUserNotificationCenter.current().requestAuthorization(options: options) { (granted, error) in
+            if !granted {
+                print("Oops, no access")
+            }
+        }
+        
+        
     }
     
     private func correctDate(_ date: Date, onWeekdaysForNotify weekdays:[Int]) -> [Date]
@@ -117,35 +137,53 @@ class Scheduler : AlarmSchedulerDelegate
     }
     
     internal func setNotificationWithDate(_ date: Date, onWeekdaysForNotify weekdays:[Int], snoozeEnabled:Bool,  onSnooze: Bool, soundName: String, index: Int) {
-        let AlarmNotification: UILocalNotification = UILocalNotification()
-        AlarmNotification.alertBody = "Wake Up!"
-        AlarmNotification.alertAction = "Open App"
-        AlarmNotification.category = "myAlarmCategory"
-        AlarmNotification.soundName = soundName + ".mp3"
-        AlarmNotification.timeZone = TimeZone.current
+        
         let repeating: Bool = !weekdays.isEmpty
-        AlarmNotification.userInfo = ["snooze" : snoozeEnabled, "index": index, "soundName": soundName, "repeating" : repeating]
+        
+        let content = UNMutableNotificationContent()
+        content.title = "A TITLE TODO Replace"
+        content.body = "Wake Up!"
+        // TODO: think about criticalSound
+        content.sound = UNNotificationSound(named: UNNotificationSoundName(soundName + ".mp3"))
+        content.categoryIdentifier = Id.alarmCategoryIdentifier
+        content.userInfo = ["snooze" : snoozeEnabled, "index": index, "soundName": soundName, "repeating" : repeating]
+        
+        
+        //AlarmNotification.alertAction = "Open App"
+        //AlarmNotification.timeZone = TimeZone.current
+        
+        
         //repeat weekly if repeat weekdays are selected
         //no repeat with snooze notification
-        if !weekdays.isEmpty && !onSnooze{
-            AlarmNotification.repeatInterval = NSCalendar.Unit.weekOfYear
-        }
+        //if !weekdays.isEmpty && !onSnooze{
+          //  AlarmNotification.repeatInterval = NSCalendar.Unit.weekOfYear
+        //}
         
         let datesForNotification = correctDate(date, onWeekdaysForNotify:weekdays)
         
+        // ???
         syncAlarmModel()
-        for d in datesForNotification {
+        
+        for notificationDate in datesForNotification {
             if onSnooze {
                 alarmModel.alarms[index].date = Scheduler.correctSecondComponent(date: alarmModel.alarms[index].date)
             }
             else {
-                alarmModel.alarms[index].date = d
+                alarmModel.alarms[index].date = notificationDate
             }
-            AlarmNotification.fireDate = d
-            UIApplication.shared.scheduleLocalNotification(AlarmNotification)
+            
+            let notificationDateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: notificationDate)
+            let notificationDateTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: repeating)
+            let alarmNotificationRequest = UNNotificationRequest(identifier: Id.alarmCategoryIdentifier, content: content, trigger: notificationDateTrigger)
+            
+            UNUserNotificationCenter.current().add(alarmNotificationRequest) { (error) in
+                
+                if let error = error {
+                    print("Unable to Add Notification Request: \(error)")
+                }
+            }
         }
         setupNotificationSettings()
-        
     }
     
     func setNotificationForSnooze(snoozeMinute: Int, soundName: String, index: Int) {
@@ -157,7 +195,7 @@ class Scheduler : AlarmSchedulerDelegate
     
     func reSchedule() {
         //cancel all and register all is often more convenient
-        UIApplication.shared.cancelAllLocalNotifications()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         syncAlarmModel()
         for i in 0..<alarmModel.count{
             let alarm = alarmModel.alarms[i]
@@ -169,26 +207,35 @@ class Scheduler : AlarmSchedulerDelegate
     
     // workaround for some situation that alarm model is not setting properly (when app on background or not launched)
     func checkNotification() {
-        alarmModel = Alarms()
-        let notifications = UIApplication.shared.scheduledLocalNotifications
-        if notifications!.isEmpty {
-            for i in 0..<alarmModel.count {
-                alarmModel.alarms[i].enabled = false
-            }
-        }
-        else {
-            for (i, alarm) in alarmModel.alarms.enumerated() {
-                var isOutDated = true
-                if alarm.onSnooze {
-                    isOutDated = false
+        syncAlarmModel()
+        
+        UNUserNotificationCenter.current().getPendingNotificationRequests { (pendingNotifications) in
+            
+            if pendingNotifications.isEmpty {
+                for i in 0..<self.alarmModel.count {
+                    self.alarmModel.alarms[i].enabled = false
                 }
-                for n in notifications! {
-                    if alarm.date >= n.fireDate! {
+            }
+            else {
+                for (i, alarm) in self.alarmModel.alarms.enumerated() {
+                    var isOutDated = true
+                    if alarm.onSnooze {
                         isOutDated = false
                     }
-                }
-                if isOutDated {
-                    alarmModel.alarms[i].enabled = false
+                    for notification in pendingNotifications {
+                        if let trigger = notification.trigger as? UNCalendarNotificationTrigger {
+                            
+                            if let nextFireDate = trigger.nextTriggerDate() {
+                                if alarm.date >= nextFireDate {
+                                    isOutDated = false
+                                }
+                            }
+                        }
+                        
+                    }
+                    if isOutDated {
+                        self.alarmModel.alarms[i].enabled = false
+                    }
                 }
             }
         }
@@ -211,18 +258,40 @@ class Scheduler : AlarmSchedulerDelegate
         else {return .after}
     }
     
-    private func minFireDateWithIndex(notifications: [UILocalNotification]) -> (Date, Int)? {
-        if notifications.isEmpty {
+    private func minFireDateWithIndex(notificationRequests: [UNNotificationRequest]) -> (Date, Int)? {
+
+        var minIndex = -1
+        
+        guard let firstNotification = notificationRequests.first else {
             return nil
         }
-        var minIndex = -1
-        var minDate: Date = notifications.first!.fireDate!
-        for n in notifications {
-            let index = n.userInfo!["index"] as! Int
-            if(n.fireDate! <= minDate) {
-                minDate = n.fireDate!
-                minIndex = index
+        
+        guard let firstTrigger = firstNotification.trigger as? UNCalendarNotificationTrigger else {
+            return nil
+        }
+        
+        guard var minDate = firstTrigger.nextTriggerDate() else {
+            return nil
+        }
+        
+        for notification in notificationRequests {
+            
+            guard let trigger = notification.trigger as? UNCalendarNotificationTrigger else {
+                return nil
             }
+            
+            if let index = notification.content.userInfo["index"] as? Int {
+                
+                guard let nextTriggerDate = trigger.nextTriggerDate() else {
+                    return nil
+                }
+                
+                if nextTriggerDate <= minDate {
+                    minDate = nextTriggerDate
+                    minIndex = index
+                }
+            }
+            
         }
         return (minDate, minIndex)
     }
