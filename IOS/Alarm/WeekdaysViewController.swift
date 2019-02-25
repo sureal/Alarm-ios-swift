@@ -9,15 +9,15 @@
 import UIKit
 
 class WeekdaysViewController: UITableViewController {
-    
+
     var weekdays: [Int]!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
-        performSegue(withIdentifier: Id.weekdaysUnwindIdentifier, sender: self)
+        performSegue(withIdentifier: AlarmAppIdentifiers.weekdaysUnwindIdentifier, sender: self)
     }
 
     override func didReceiveMemoryWarning() {
@@ -27,55 +27,50 @@ class WeekdaysViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        
-        for weekday in weekdays
-        {
-            if weekday == (indexPath.row + 1) {
-                cell.accessoryType = UITableViewCell.AccessoryType.checkmark
-            }
+
+        for weekday in weekdays where weekday == (indexPath.row + 1) {
+
+            cell.accessoryType = UITableViewCell.AccessoryType.checkmark
         }
         return cell
     }
 
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)!
-        
-        if let index = weekdays.index(of: (indexPath.row + 1)){
+
+        if let index = weekdays.index(of: (indexPath.row + 1)) {
             weekdays.remove(at: index)
             cell.setSelected(true, animated: true)
             cell.setSelected(false, animated: true)
             cell.accessoryType = UITableViewCell.AccessoryType.none
-        }
-        else{
+        } else {
             //row index start from 0, weekdays index start from 1 (Sunday), so plus 1
             weekdays.append(indexPath.row + 1)
             cell.setSelected(true, animated: true)
             cell.setSelected(false, animated: true)
             cell.accessoryType = UITableViewCell.AccessoryType.checkmark
-            
+
         }
     }
 }
-
 
 extension WeekdaysViewController {
     static func repeatText(weekdays: [Int]) -> String {
         if weekdays.count == 7 {
             return "Every day"
         }
-        
+
         if weekdays.isEmpty {
             return "Never"
         }
-        
+
         var ret = String()
-        var weekdaysSorted:[Int] = [Int]()
-        
+        var weekdaysSorted: [Int] = [Int]()
+
         weekdaysSorted = weekdays.sorted(by: <)
-        
+
         for day in weekdaysSorted {
-            switch day{
+            switch day {
             case 1:
                 ret += "Sun "
             case 2:

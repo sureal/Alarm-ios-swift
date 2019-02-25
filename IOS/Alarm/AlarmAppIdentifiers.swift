@@ -1,5 +1,5 @@
 //
-//  Identifier.swift
+//  AlarmAppIdentifiers.swift
 //  Alarm-ios-swift
 //
 //  Created by natsu1211 on 2017/02/02.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Id {
+struct AlarmAppIdentifiers {
     static let stopIdentifier = "Alarm-ios-swift-stop"
     static let snoozeIdentifier = "Alarm-ios-swift-snooze"
     static let addSegueIdentifier = "addSegue"

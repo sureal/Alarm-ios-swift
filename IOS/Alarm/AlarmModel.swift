@@ -10,100 +10,73 @@
 import Foundation
 import MediaPlayer
 
-struct Alarm: PropertyReflectable {
-    var date: Date = Date()
-    var enabled: Bool = false
-    var snoozeEnabled: Bool = false
-    var repeatWeekdays: [Int] = []
-    var uuid: String = ""
-    var mediaID: String = ""
-    var mediaLabel: String = "bell"
-    var label: String = "Alarm"
-    var onSnooze: Bool = false
-    
-    init(){}
-    
-    init(date:Date, enabled:Bool, snoozeEnabled:Bool, repeatWeekdays:[Int], uuid:String, mediaID:String, mediaLabel:String, label:String, onSnooze: Bool){
-        self.date = date
-        self.enabled = enabled
-        self.snoozeEnabled = snoozeEnabled
-        self.repeatWeekdays = repeatWeekdays
-        self.uuid = uuid
-        self.mediaID = mediaID
-        self.mediaLabel = mediaLabel
-        self.label = label
-        self.onSnooze = onSnooze
-    }
-    
-    init(_ dict: PropertyReflectable.RepresentationType){
-        date = dict["date"] as! Date
-        enabled = dict["enabled"] as! Bool
-        snoozeEnabled = dict["snoozeEnabled"] as! Bool
-        repeatWeekdays = dict["repeatWeekdays"] as! [Int]
-        uuid = dict["uuid"] as! String
-        mediaID = dict["mediaID"] as! String
-        mediaLabel = dict["mediaLabel"] as! String
-        label = dict["label"] as! String
-        onSnooze = dict["onSnooze"] as! Bool
-    }
-    
-    static var propertyCount: Int = 9
-}
+class AlarmModel {
 
-extension Alarm {
-    var formattedTime: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h:mm a"
-        return dateFormatter.string(from: self.date)
-    }
-}
-
-//This can be considered as a viewModel
-class Alarms: Persistable {
-    let ud: UserDefaults = UserDefaults.standard
+    let userDefaults: UserDefaults = UserDefaults.standard
     let persistKey: String = "myAlarmKey"
+
     var alarms: [Alarm] = [] {
         //observer, sync with UserDefaults
-        didSet{
-            persist()
+        didSet {
+            storeToUserDefaults()
         }
     }
-    
-    private func getAlarmsDictRepresentation()->[PropertyReflectable.RepresentationType] {
-        return alarms.map {$0.propertyDictRepresentation}
+
+    var alarmCount: Int {
+        return alarms.count
     }
-    
+
     init() {
-        alarms = getAlarms()
+        alarms = loadAlarmsFromUserDefaults()
     }
-    
-    func persist() {
-        ud.set(getAlarmsDictRepresentation(), forKey: persistKey)
-        ud.synchronize()
+
+    func storeToUserDefaults() {
+
+        let encoder = JSONEncoder()
+        do {
+            let data = try encoder.encode(self.alarms)
+            guard let jsonString = String(data: data, encoding: .utf8) else {
+                print("Cannot convert alarms array to string")
+                return
+            }
+
+            userDefaults.set(jsonString, forKey: persistKey)
+            userDefaults.synchronize()
+
+        } catch {
+            print("Cannot convert alarm array to string")
+        }
     }
-    
-    func unpersist() {
-        for key in ud.dictionaryRepresentation().keys {
+
+    private func deleteAlarmsFromUserDefaults() {
+        for key in userDefaults.dictionaryRepresentation().keys {
             UserDefaults.standard.removeObject(forKey: key.description)
         }
     }
-    
-    var count: Int {
-        return alarms.count
-    }
-    
-    //helper, get all alarms from Userdefaults
-    private func getAlarms() -> [Alarm] {
-        let array = UserDefaults.standard.array(forKey: persistKey)
-        guard let alarmArray = array else{
-            return [Alarm]()
+
+    private func loadAlarmsFromUserDefaults() -> [Alarm] {
+
+        let jsonString = UserDefaults.standard.string(forKey: persistKey)
+        guard let json = jsonString else {
+            print("No alarms found in User Defaults")
+            return []
         }
-        if let dicts = alarmArray as? [PropertyReflectable.RepresentationType]{
-            if dicts.first?.count == Alarm.propertyCount {
-                return dicts.map{Alarm($0)}
-            }
+
+        guard let jsonData = json.data(using: .utf8) else {
+            print("Cannot create json data from json string")
+            deleteAlarmsFromUserDefaults()
+            return []
         }
-        unpersist()
-        return [Alarm]()
+        let decoder = JSONDecoder()
+
+        do {
+            let alarmArray: [Alarm] = try decoder.decode([Alarm].self, from: jsonData)
+            return alarmArray
+        } catch {
+            print("Cannot decode Alarm Array from jsonData")
+        }
+
+        deleteAlarmsFromUserDefaults()
+        return []
     }
 }

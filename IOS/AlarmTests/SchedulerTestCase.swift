@@ -9,10 +9,9 @@
 import XCTest
 @testable import Alarm_ios_swift
 
-
 class SchedulerTestCase: XCTestCase {
     
-    let scheduler = Scheduler()
+    let scheduler = AlarmScheduler()
     
     override func setUp() {
         super.setUp()
@@ -24,8 +23,6 @@ class SchedulerTestCase: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
-
     
     func testPerformanceExample() {
         // This is an example of a performance test case.
