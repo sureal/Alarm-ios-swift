@@ -78,16 +78,18 @@ class MainAlarmViewController: UITableViewController {
                     style: UITableViewCell.CellStyle.subtitle,
                     reuseIdentifier: AlarmAppIdentifiers.alarmCellIdentifier)
         }
+
         //cell text
         cell!.selectionStyle = .none
         cell!.tag = indexPath.row
         let alarm: Alarm = alarmModel.alarms[indexPath.row]
-        let amAttr: [NSAttributedString.Key: Any] = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue): UIFont.systemFont(ofSize: 20.0)]
-        let str = NSMutableAttributedString(string: alarm.formattedTime(), attributes: amAttr)
-        let timeAttr: [NSAttributedString.Key: Any] = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue): UIFont.systemFont(ofSize: 45.0)]
+        let amAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 20.0)]
+        let attributedTimeText = NSMutableAttributedString(string: alarm.formattedTime(), attributes: amAttributes)
+        let timeAttr: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 45.0)]
 
-        str.addAttributes(timeAttr, range: NSMakeRange(0, str.length - 2))
-        cell!.textLabel?.attributedText = str
+        let timeRange = NSRange(location: 0, length: attributedTimeText.length - 2)
+        attributedTimeText.addAttributes(timeAttr, range: timeRange)
+        cell!.textLabel?.attributedText = attributedTimeText
         cell!.detailTextLabel?.text = alarm.label
         //append switch button
         let uiSwitch = UISwitch(frame: CGRect())
@@ -95,7 +97,11 @@ class MainAlarmViewController: UITableViewController {
 
         //tag is used to indicate which row had been touched
         uiSwitch.tag = indexPath.row
-        uiSwitch.addTarget(self, action: #selector(MainAlarmViewController.switchTapped(_:)), for: UIControl.Event.valueChanged)
+        uiSwitch.addTarget(
+                self,
+                action: #selector(MainAlarmViewController.switchTapped(_:)),
+                for: UIControl.Event.valueChanged)
+
         if alarm.enabled {
             cell!.backgroundColor = UIColor.white
             cell!.textLabel?.alpha = 1.0
@@ -127,7 +133,7 @@ class MainAlarmViewController: UITableViewController {
             tableView.reloadData()
         } else {
             print("switch off")
-            alarmScheduler.reSchedule()
+            alarmScheduler.recreateNotificationsFromDataModel()
             tableView.reloadData()
         }
     }
@@ -154,7 +160,7 @@ class MainAlarmViewController: UITableViewController {
 
             // Delete the row from the data source
             tableView.deleteRows(at: [indexPath], with: .fade)
-            alarmScheduler.reSchedule()
+            alarmScheduler.recreateNotificationsFromDataModel()
         }
     }
 

@@ -8,7 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		5C5680BE3BB3B93E3F719F46 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568DC031A480F1A987DABA /* Alarm.swift */; };
+		5C5681062EAFC8A8460061A1 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56832E388AF3453DCE4DD0 /* UserInfo.swift */; };
+		5C56833DA0979C9CB4295FEA /* Date+Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56818CB6E040228EA89456 /* Date+Correction.swift */; };
+		5C5683585608AE8A879AF911 /* Date+Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56818CB6E040228EA89456 /* Date+Correction.swift */; };
 		5C5687469B791F9CB3BC8F81 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568DC031A480F1A987DABA /* Alarm.swift */; };
+		5C568CD57539B99028C5C4F8 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56832E388AF3453DCE4DD0 /* UserInfo.swift */; };
 		7701B7B31E99414800908B6C /* UIWindow+VisibleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7701B7B21E99414800908B6C /* UIWindow+VisibleViewController.swift */; };
 		7773A0F81E43276700811A1D /* AlarmAppIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7773A0F71E43276700811A1D /* AlarmAppIdentifiers.swift */; };
 		7773A0FA1E4610B700811A1D /* SegueInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7773A0F91E4610B700811A1D /* SegueInfo.swift */; };
@@ -40,6 +44,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5C56818CB6E040228EA89456 /* Date+Correction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Correction.swift"; sourceTree = "<group>"; };
+		5C56832E388AF3453DCE4DD0 /* UserInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		5C568DC031A480F1A987DABA /* Alarm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alarm.swift; sourceTree = "<group>"; };
 		7701B7B21E99414800908B6C /* UIWindow+VisibleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+VisibleViewController.swift"; sourceTree = "<group>"; };
 		7773A0F71E43276700811A1D /* AlarmAppIdentifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmAppIdentifiers.swift; sourceTree = "<group>"; };
@@ -88,6 +94,7 @@
 			children = (
 				7701B7B21E99414800908B6C /* UIWindow+VisibleViewController.swift */,
 				77B08F9E1EA6552100BECF6C /* NotificationName+Extension.swift */,
+				5C56818CB6E040228EA89456 /* Date+Correction.swift */,
 			);
 			name = Extension;
 			sourceTree = "<group>";
@@ -105,6 +112,7 @@
 				9EED78931AA1E51700961BC2 /* AlarmModel.swift */,
 				7773A0F91E4610B700811A1D /* SegueInfo.swift */,
 				5C568DC031A480F1A987DABA /* Alarm.swift */,
+				5C56832E388AF3453DCE4DD0 /* UserInfo.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -346,6 +354,8 @@
 				7701B7B31E99414800908B6C /* UIWindow+VisibleViewController.swift in Sources */,
 				9E9BEE071BCF8FF8000CF364 /* WeekdaysViewController.swift in Sources */,
 				5C5680BE3BB3B93E3F719F46 /* Alarm.swift in Sources */,
+				5C5681062EAFC8A8460061A1 /* UserInfo.swift in Sources */,
+				5C56833DA0979C9CB4295FEA /* Date+Correction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,6 +365,8 @@
 			files = (
 				77CBDC612010E8A200F5D554 /* SchedulerTestCase.swift in Sources */,
 				5C5687469B791F9CB3BC8F81 /* Alarm.swift in Sources */,
+				5C568CD57539B99028C5C4F8 /* UserInfo.swift in Sources */,
+				5C5683585608AE8A879AF911 /* Date+Correction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

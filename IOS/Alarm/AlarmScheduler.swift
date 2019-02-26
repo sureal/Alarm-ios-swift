@@ -39,7 +39,7 @@ class AlarmScheduler {
         //snoozeAction.activationMode = UIUserNotificationActivationMode.background
         //snoozeAction.isDestructive = false
         //snoozeAction.isAuthenticationRequired = false
-        
+
         // Specify the category related to the above actions.
         var notificationActions = [UNNotificationAction]()
         if snoozeEnabled {
@@ -54,7 +54,7 @@ class AlarmScheduler {
 
         //alarmCategory.minimalActions = notificationActions
 
-        let notificationCategories = Set(arrayLiteral: alarmCategory)
+        let notificationCategories: Set = [alarmCategory]
         UNUserNotificationCenter.current().setNotificationCategories(notificationCategories)
 
         let options: UNAuthorizationOptions = [.alert, .sound]
@@ -70,88 +70,65 @@ class AlarmScheduler {
 
     private func correctDate(_ date: Date, onWeekdaysForNotify weekdays: [Int]) -> [Date] {
 
-        var correctedDate: [Date] = [Date]()
+        var correctedDates: [Date] = [Date]()
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
         let now = Date()
-        let flags: NSCalendar.Unit = [NSCalendar.Unit.weekday, NSCalendar.Unit.weekdayOrdinal, NSCalendar.Unit.day]
-        let dateComponents = (calendar as NSCalendar).components(flags, from: date)
-        let weekdayOfDate: Int = dateComponents.weekday!
+        let componentsToExtract: Set<Calendar.Component> = [.weekday, .weekdayOrdinal, .day]
+        let dateComponents = calendar.dateComponents(componentsToExtract, from: date)
+        guard let weekdayOfDate: Int = dateComponents.weekday else {
+            return correctedDates
+        }
 
         //no repeat
         if weekdays.isEmpty {
             //scheduling date is earlier than current date
             if date < now {
                 //plus one day, otherwise the notification will be fired righton
-                correctedDate.append((calendar as NSCalendar).date(
-                        byAdding: NSCalendar.Unit.day,
-                        value: 1,
-                        to: date,
-                        options: .matchStrictly)!)
+                correctedDates.append(date.toSomeDaysLaterDate(daysToAdd: 1))
             } else { //later
-                correctedDate.append(date)
+                correctedDates.append(date)
             }
-            return correctedDate
+            return correctedDates
         }
         //repeat
         else {
             let daysInWeek = 7
-            correctedDate.removeAll(keepingCapacity: true)
+            correctedDates.removeAll(keepingCapacity: true)
             for currentWeekday in weekdays {
 
-                var dateOfWeekday: Date!
+                var dateOfWeekday: Date
                 //schedule on next week
                 if compare(weekday: currentWeekday, with: weekdayOfDate) == .before {
-                    dateOfWeekday = (calendar as NSCalendar).date(
-                            byAdding: NSCalendar.Unit.day,
-                            value: currentWeekday + daysInWeek - weekdayOfDate,
-                            to: date,
-                            options: .matchStrictly)!
+                    dateOfWeekday = date.toSomeDaysLaterDate(daysToAdd: currentWeekday + daysInWeek - weekdayOfDate)
                 }
                 //schedule on today or next week
                 else if compare(weekday: currentWeekday, with: weekdayOfDate) == .same {
-                    //scheduling date is eariler than current date, then schedule on next week
+                    //scheduling date is earlier than current date, then schedule on next week
                     if date.compare(now) == ComparisonResult.orderedAscending {
-                        dateOfWeekday = (calendar as NSCalendar).date(
-                                byAdding: NSCalendar.Unit.day,
-                                value: daysInWeek,
-                                to: date,
-                                options: .matchStrictly)!
+                        dateOfWeekday = date.toSomeDaysLaterDate(daysToAdd: daysInWeek)
                     } else { //later
                         dateOfWeekday = date
                     }
                 }
                 //schedule on next days of this week
                 else { //after
-                    dateOfWeekday = (calendar as NSCalendar).date(
-                            byAdding: NSCalendar.Unit.day,
-                            value: currentWeekday - weekdayOfDate,
-                            to: date,
-                            options: .matchStrictly)!
+                    dateOfWeekday = date.toSomeDaysLaterDate(daysToAdd: currentWeekday - weekdayOfDate)
                 }
 
                 //fix second component to 0
-                dateOfWeekday = AlarmScheduler.correctSecondComponent(date: dateOfWeekday, calendar: calendar)
-                correctedDate.append(dateOfWeekday)
+                dateOfWeekday = dateOfWeekday.toSecondsRoundedDate()
+                correctedDates.append(dateOfWeekday)
             }
-            return correctedDate
+            return correctedDates
         }
     }
 
-    public static func correctSecondComponent(
-            date: Date,
-            calendar: Calendar = Calendar(identifier: Calendar.Identifier.gregorian)) -> Date {
-
-        let second = calendar.component(.second, from: date)
-        let correctedDate = (calendar as NSCalendar).date(
-                byAdding: NSCalendar.Unit.second,
-                value: -second,
-                to: date,
-                options: .matchStrictly)!
-        return correctedDate
-    }
-
-    internal func setNotificationWithDate(_ date: Date, onWeekdaysForNotify weekdays: [Int], snoozeEnabled: Bool,
-                                          onSnooze: Bool, soundName: String, index: Int) {
+    func setNotificationWithDate(_ notificationDate: Date,
+                                 onWeekdaysForNotify weekdays: [Int],
+                                 snoozeEnabled: Bool,
+                                 onSnooze: Bool,
+                                 soundName: String,
+                                 index: Int) {
 
         let repeating: Bool = !weekdays.isEmpty
 
@@ -161,25 +138,32 @@ class AlarmScheduler {
         // TODO: think about criticalSound
         content.sound = UNNotificationSound(named: UNNotificationSoundName(soundName + ".mp3"))
         content.categoryIdentifier = AlarmAppIdentifiers.alarmCategoryIdentifier
-        content.userInfo = ["snooze": snoozeEnabled, "index": index, "soundName": soundName, "repeating": repeating]
-        
+
+        let userInfo = UserInfo()
+        userInfo.index = index
+        userInfo.soundName = soundName
+        userInfo.isSnoozeEnabled = snoozeEnabled
+        userInfo.repeating = repeating
+        content.userInfo = userInfo.userInfoDictionary
+
         //AlarmNotification.alertAction = "Open App"
         //AlarmNotification.timeZone = TimeZone.current
-        
+
         //repeat weekly if repeat weekdays are selected
         //no repeat with snooze notification
         //if !weekdays.isEmpty && !onSnooze{
         //  AlarmNotification.repeatInterval = NSCalendar.Unit.weekOfYear
         //}
 
-        let datesForNotification = correctDate(date, onWeekdaysForNotify: weekdays)
+        let datesForNotification = correctDate(notificationDate, onWeekdaysForNotify: weekdays)
 
         // ???
         syncAlarmModel()
 
         for notificationDate in datesForNotification {
             if onSnooze {
-                alarmModel.alarms[index].date = AlarmScheduler.correctSecondComponent(date: alarmModel.alarms[index].date)
+                let originalDate = alarmModel.alarms[index].date
+                alarmModel.alarms[index].date = originalDate.toSecondsRoundedDate()
             } else {
                 alarmModel.alarms[index].date = notificationDate
             }
@@ -205,16 +189,13 @@ class AlarmScheduler {
         setupNotificationSettings()
     }
 
-    func setNotificationForSnooze(snoozeMinute: Int, soundName: String, index: Int) {
-        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-        let now = Date()
-        let snoozeTime = (calendar as NSCalendar).date(
-                byAdding: NSCalendar.Unit.minute,
-                value: snoozeMinute,
-                to: now,
-                options: .matchStrictly)!
+    func setNotificationForSnooze(snoozeForMinutes: Int, soundName: String, index: Int) {
 
-        setNotificationWithDate(snoozeTime,
+        let now = Date()
+        let snoozeTime = now.toSomeMinutesLaterDate(minutesToAdd: snoozeForMinutes)
+
+        setNotificationWithDate(
+                snoozeTime,
                 onWeekdaysForNotify: [Int](),
                 snoozeEnabled: true,
                 onSnooze: true,
@@ -222,14 +203,17 @@ class AlarmScheduler {
                 index: index)
     }
 
-    func reSchedule() {
+    func recreateNotificationsFromDataModel() {
         //cancel all and register all is often more convenient
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+
         syncAlarmModel()
+
         for alarmIndex in 0..<alarmModel.alarmCount {
             let alarm = alarmModel.alarms[alarmIndex]
             if alarm.enabled {
-                setNotificationWithDate(alarm.date as Date,
+                setNotificationWithDate(
+                        alarm.date,
                         onWeekdaysForNotify: alarm.repeatWeekdays,
                         snoozeEnabled: alarm.snoozeEnabled,
                         onSnooze: false,
@@ -241,6 +225,7 @@ class AlarmScheduler {
 
     // workaround for some situation that alarm model is not setting properly (when app on background or not launched)
     func checkNotification() {
+
         syncAlarmModel()
 
         UNUserNotificationCenter.current().getPendingNotificationRequests { (pendingNotifications) in

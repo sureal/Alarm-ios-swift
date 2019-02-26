@@ -37,7 +37,8 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
     }
 
     @IBAction func saveEditAlarm(_ sender: AnyObject) {
-        let date = AlarmScheduler.correctSecondComponent(date: datePicker.date)
+
+        let date = datePicker.date.toSecondsRoundedDate()
         let index = segueInfo.curCellIndex
         var tempAlarm = Alarm()
         tempAlarm.date = date
@@ -86,7 +87,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
             if indexPath.row == 0 {
 
                 cell!.textLabel!.text = "Repeat"
-                cell!.detailTextLabel!.text = WeekdaysViewController.repeatText(weekdays: segueInfo.repeatWeekdays)
+                cell!.detailTextLabel!.text = self.repeatText(weekdays: segueInfo.repeatWeekdays)
                 cell!.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             } else if indexPath.row == 1 {
                 cell!.textLabel!.text = "Label"
@@ -170,7 +171,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
                         }
                     }
                 }
-                alarmScheduler.reSchedule()
+                alarmScheduler.recreateNotificationsFromDataModel()
             }
 
         } else if segue.identifier == AlarmAppIdentifiers.soundSegueIdentifier {
@@ -212,5 +213,43 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
             segueInfo.mediaLabel = sourceViewController.mediaLabel
             segueInfo.mediaID = sourceViewController.mediaID
         }
+    }
+
+    private func repeatText(weekdays: [Int]) -> String {
+        if weekdays.count == 7 {
+            return "Every day"
+        }
+
+        if weekdays.isEmpty {
+            return "Never"
+        }
+
+        var ret = String()
+        var weekdaysSorted: [Int] = [Int]()
+
+        weekdaysSorted = weekdays.sorted(by: <)
+
+        for day in weekdaysSorted {
+            switch day {
+            case 1:
+                ret += "Sun "
+            case 2:
+                ret += "Mon "
+            case 3:
+                ret += "Tue "
+            case 4:
+                ret += "Wed "
+            case 5:
+                ret += "Thu "
+            case 6:
+                ret += "Fri "
+            case 7:
+                ret += "Sat "
+            default:
+                //throw
+                break
+            }
+        }
+        return ret
     }
 }

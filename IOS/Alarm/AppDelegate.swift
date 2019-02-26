@@ -137,21 +137,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, UN
 
         //show an alert window
         let storageController = UIAlertController(title: "Alarm", message: nil, preferredStyle: .alert)
-        var isSnooze: Bool = false
-        var soundName: String = ""
-        var index: Int = -1
-        let userInfo = notification.request.content.userInfo
-        isSnooze = userInfo["snooze"] as! Bool
-        soundName = userInfo["soundName"] as! String
-        index = userInfo["index"] as! Int
+        let userInfoDict = notification.request.content.userInfo
+        let userInfo = UserInfo(userInfo: userInfoDict)
 
-        playSound(soundName)
+        playSound(userInfo.soundName)
         //schedule notification for snooze
-        if isSnooze {
+        if userInfo.isSnoozeEnabled {
             let snoozeOption = UIAlertAction(title: "Snooze", style: .default) { (_) -> Void in
 
                 self.audioPlayer?.stop()
-                self.alarmScheduler.setNotificationForSnooze(snoozeMinute: 9, soundName: soundName, index: index)
+                self.alarmScheduler.setNotificationForSnooze(
+                        snoozeForMinutes: 9,
+                        soundName: userInfo.soundName,
+                        index: userInfo.index)
             }
             storageController.addAction(snoozeOption)
         }
@@ -160,14 +158,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, UN
             self.audioPlayer?.stop()
             AudioServicesRemoveSystemSoundCompletion(kSystemSoundID_Vibrate)
             self.alarmModel = AlarmModel()
-            self.alarmModel.alarms[index].onSnooze = false
+            self.alarmModel.alarms[userInfo.index].onSnooze = false
             //change UI
             var mainVC = self.window?.visibleViewController as? MainAlarmViewController
             if mainVC == nil {
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 mainVC = storyboard.instantiateViewController(withIdentifier: "Alarm") as? MainAlarmViewController
             }
-            mainVC!.changeSwitchButtonState(index: index)
+            mainVC!.changeSwitchButtonState(index: userInfo.index)
         }
 
         storageController.addAction(stopOption)
@@ -185,17 +183,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, UN
 
         print("Hey, I received a local notification in background due to user interaction")
 
-        var index: Int = -1
-        var soundName: String = ""
-        let userInfo = response.notification.request.content.userInfo
-        soundName = userInfo["soundName"] as! String
-        index = userInfo["index"] as! Int
+        let userInfoDict = response.notification.request.content.userInfo
+        let userInfo = UserInfo(userInfo: userInfoDict)
 
         self.alarmModel = AlarmModel()
-        self.alarmModel.alarms[index].onSnooze = false
+        self.alarmModel.alarms[userInfo.index].onSnooze = false
         if response.actionIdentifier == AlarmAppIdentifiers.snoozeIdentifier {
-            alarmScheduler.setNotificationForSnooze(snoozeMinute: 9, soundName: soundName, index: index)
-            self.alarmModel.alarms[index].onSnooze = true
+            alarmScheduler.setNotificationForSnooze(
+                    snoozeForMinutes: 9,
+                    soundName: userInfo.soundName,
+                    index: userInfo.index)
+            self.alarmModel.alarms[userInfo.index].onSnooze = true
         }
 
         completionHandler()
