@@ -13,6 +13,10 @@ import UserNotifications
 class AlarmScheduler {
     var alarmModel: AlarmModel = AlarmModel()
 
+    init() {
+        self.setupNotificationCategories()
+    }
+
     func setupNotificationCategories() {
 
         // Specify the notification actions.
@@ -194,8 +198,6 @@ class AlarmScheduler {
                 }
             }
         }
-
-        setupNotificationCategories()
     }
 
     func setNotificationForSnooze(snoozeForMinutes: Int, soundName: String, index: Int) {
@@ -284,43 +286,5 @@ class AlarmScheduler {
         } else {
             return .after
         }
-    }
-
-    private func minFireDateWithIndex(notificationRequests: [UNNotificationRequest]) -> (Date, Int)? {
-
-        var minIndex = -1
-
-        guard let firstNotification = notificationRequests.first else {
-            return nil
-        }
-
-        guard let firstTrigger = firstNotification.trigger as? UNCalendarNotificationTrigger else {
-            return nil
-        }
-
-        guard var minDate = firstTrigger.nextTriggerDate() else {
-            return nil
-        }
-
-        for notification in notificationRequests {
-
-            guard let trigger = notification.trigger as? UNCalendarNotificationTrigger else {
-                return nil
-            }
-
-            if let index = notification.content.userInfo["index"] as? Int {
-
-                guard let nextTriggerDate = trigger.nextTriggerDate() else {
-                    return nil
-                }
-
-                if nextTriggerDate <= minDate {
-                    minDate = nextTriggerDate
-                    minIndex = index
-                }
-            }
-
-        }
-        return (minDate, minIndex)
     }
 }
