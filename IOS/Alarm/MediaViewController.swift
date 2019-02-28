@@ -21,7 +21,7 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        performSegue(withIdentifier: AlarmAppIdentifiers.soundUnwindIdentifier, sender: self)
+        performSegue(withIdentifier: Identifier.UnwindSegue.sound, sender: self)
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,11 +77,11 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: AlarmAppIdentifiers.musicIdentifier)
+        var cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.music)
 
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCell.CellStyle.default,
-                    reuseIdentifier: AlarmAppIdentifiers.musicIdentifier)
+                    reuseIdentifier: Identifier.TableCell.music)
         }
         if indexPath.section == 0 {
             if indexPath.row == 0 {

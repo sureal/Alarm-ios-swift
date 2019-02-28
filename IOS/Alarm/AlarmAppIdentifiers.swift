@@ -8,22 +8,36 @@
 
 import Foundation
 
-struct AlarmAppIdentifiers {
-    static let stopIdentifier = "Alarm-ios-swift-stop"
-    static let snoozeIdentifier = "Alarm-ios-swift-snooze"
-    static let addSegueIdentifier = "addSegue"
-    static let editSegueIdentifier = "editSegue"
-    static let saveSegueIdentifier = "saveEditSegue"
-    static let soundSegueIdentifier = "soundSegue"
-    static let labelSegueIdentifier = "labelEditSegue"
-    static let weekdaysSegueIdentifier = "weekdaysSegue"
-    static let settingIdentifier = "setting"
-    static let musicIdentifier = "musicIdentifier"
-    static let alarmCellIdentifier = "alarmCell"
-    
-    static let labelUnwindIdentifier = "labelUnwindSegue"
-    static let soundUnwindIdentifier = "soundUnwindSegue"
-    static let weekdaysUnwindIdentifier = "weekdaysUnwindSegue"
-    
-    static let alarmCategoryIdentifier = "myAlarmCategory"
+struct Identifier {
+
+    struct Segue {
+        static let add = "addSegue"
+        static let edit = "editSegue"
+        static let save = "saveEditSegue"
+        static let sound = "soundSegue"
+        static let label = "labelEditSegue"
+        static let weekdays = "weekdaysSegue"
+    }
+
+    struct UnwindSegue {
+        static let label = "labelUnwindSegue"
+        static let sound = "soundUnwindSegue"
+        static let weekdays = "weekdaysUnwindSegue"
+    }
+
+    struct TableCell {
+        static let setting = "setting"
+        static let music = "musicIdentifier"
+        static let alarm = "alarmCell"
+    }
+
+    struct NotificationAction {
+        static let stop = "Alarm.NotificationAction.stop"
+        static let snooze = "Alarm.NotificationAction.snooze"
+    }
+
+    struct NotificationCategory {
+        static let noSnooze = "Alarm.NotificationCategory.NoSnooze"
+        static let snooze = "Alarm.NotificationCategory.Snooze"
+    }
 }

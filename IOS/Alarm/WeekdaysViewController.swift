@@ -17,7 +17,7 @@ class WeekdaysViewController: UITableViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        performSegue(withIdentifier: AlarmAppIdentifiers.weekdaysUnwindIdentifier, sender: self)
+        performSegue(withIdentifier: Identifier.UnwindSegue.weekdays, sender: self)
     }
 
     override func didReceiveMemoryWarning() {

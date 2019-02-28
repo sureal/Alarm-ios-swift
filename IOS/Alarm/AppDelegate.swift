@@ -1,6 +1,5 @@
 //
 //  AppDelegate.swift
-//  WeatherAlarm
 //
 //  Created by longyutao on 15-2-28.
 //  Copyright (c) 2015年 LongGames. All rights reserved.
@@ -13,85 +12,29 @@ import AVFoundation
 import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var audioPlayer: AVAudioPlayer?
+
     let alarmScheduler = AlarmScheduler()
+    var alarmPlayer: AlarmPlayer?
     var alarmModel: AlarmModel = AlarmModel()
+    var notificationReceiver: NotificationReceiver?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        // set app delegate as notification handler (for now)
-        UNUserNotificationCenter.current().delegate = self
-
-        var error: NSError?
-        do {
-            try AVAudioSession.sharedInstance().setCategory(
-                    AVAudioSession.Category.playback,
-                    mode: AVAudioSession.Mode.default,
-                    options: AVAudioSession.CategoryOptions.duckOthers)
-
-            //.setCategory(convertFromAVAudioSessionCategory(AVAudioSession.Category.playback))
-        } catch let error1 as NSError {
-            error = error1
-            print("could not set session. err:\(error!.localizedDescription)")
+        self.alarmPlayer = AlarmPlayer()
+        if let alarmPlayer = self.alarmPlayer {
+            self.notificationReceiver = NotificationReceiver(alarmPlayer: alarmPlayer, window: window)
         }
-        do {
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch let error1 as NSError {
-            error = error1
-            print("could not active session. err:\(error!.localizedDescription)")
-        }
+
         window?.tintColor = UIColor.red
 
         return true
     }
 
-    func playSound(_ soundName: String) {
 
-        //vibrate phone first
-        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-        //set vibrate callback
-        let vibrateSoundID = SystemSoundID(kSystemSoundID_Vibrate)
-        AudioServicesAddSystemSoundCompletion(
-                vibrateSoundID, nil, nil, { (_: SystemSoundID, _: UnsafeMutableRawPointer?) -> Void in
-                    AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-                }, nil)
-
-        let url = URL(fileURLWithPath: Bundle.main.path(forResource: soundName, ofType: "mp3")!)
-
-        var error: NSError?
-
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-        } catch let error1 as NSError {
-            error = error1
-            audioPlayer = nil
-        }
-
-        if let err = error {
-            print("audioPlayer error \(err.localizedDescription)")
-            return
-        } else {
-            audioPlayer!.delegate = self
-            audioPlayer!.prepareToPlay()
-        }
-
-        //negative number means loop infinity
-        audioPlayer!.numberOfLoops = -1
-        audioPlayer!.play()
-    }
-
-    //AVAudioPlayerDelegate protocol
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-
-    }
-
-    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
-
-    }
 
     //UIApplicationDelegate protocol
     func applicationWillResignActive(_ application: UIApplication) {
@@ -128,78 +71,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate, UN
         // See also applicationDidEnterBackground:.
     }
 
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
-                                withCompletionHandler completionHandler:
-                                        @escaping (UNNotificationPresentationOptions) -> Void) {
 
-        print("userNotificationCenter:willPresent:withCompletionHandler(UNNotificationPresentationOptions)")
-        // for notifications that are delivered to a foreground app:
-
-        //show an alert window
-        let storageController = UIAlertController(title: "Alarm", message: nil, preferredStyle: .alert)
-        let userInfoDict = notification.request.content.userInfo
-        let userInfo = UserInfo(userInfo: userInfoDict)
-
-        playSound(userInfo.soundName)
-        //schedule notification for snooze
-        if userInfo.isSnoozeEnabled {
-            let snoozeOption = UIAlertAction(title: "Snooze", style: .default) { (_) -> Void in
-
-                self.audioPlayer?.stop()
-                self.alarmScheduler.setNotificationForSnooze(
-                        snoozeForMinutes: 9,
-                        soundName: userInfo.soundName,
-                        index: userInfo.index)
-            }
-            storageController.addAction(snoozeOption)
-        }
-        let stopOption = UIAlertAction(title: "OK", style: .default) { (_) -> Void in
-
-            self.audioPlayer?.stop()
-            AudioServicesRemoveSystemSoundCompletion(kSystemSoundID_Vibrate)
-            self.alarmModel = AlarmModel()
-            self.alarmModel.alarms[userInfo.index].onSnooze = false
-            //change UI
-            var mainVC = self.window?.visibleViewController as? MainAlarmViewController
-            if mainVC == nil {
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                mainVC = storyboard.instantiateViewController(withIdentifier: "Alarm") as? MainAlarmViewController
-            }
-            mainVC!.changeSwitchButtonState(index: userInfo.index)
-        }
-
-        storageController.addAction(stopOption)
-        window?.visibleViewController?.navigationController?.present(storageController, animated: true, completion: nil)
-
-        completionHandler(UNNotificationPresentationOptions.sound)
-    }
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                didReceive response: UNNotificationResponse,
-                                withCompletionHandler completionHandler: @escaping () -> Void) {
-
-        print("userNotificationCenter:didReceive")
-        // to let your app know which action was selected by the user for a given notification:
-
-        print("Hey, I received a local notification in background due to user interaction")
-
-        let userInfoDict = response.notification.request.content.userInfo
-        let userInfo = UserInfo(userInfo: userInfoDict)
-
-        self.alarmModel = AlarmModel()
-        self.alarmModel.alarms[userInfo.index].onSnooze = false
-        if response.actionIdentifier == AlarmAppIdentifiers.snoozeIdentifier {
-            alarmScheduler.setNotificationForSnooze(
-                    snoozeForMinutes: 9,
-                    soundName: userInfo.soundName,
-                    index: userInfo.index)
-            self.alarmModel.alarms[userInfo.index].onSnooze = true
-        }
-
-        completionHandler()
-    }
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
-        print("userNotificationCenter:openSettingsFor")
-    }
 }

@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C56802F784C2A84103671A2 /* NotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568708F722806733CA6E35 /* NotificationReceiver.swift */; };
 		5C5680BE3BB3B93E3F719F46 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568DC031A480F1A987DABA /* Alarm.swift */; };
 		5C5681062EAFC8A8460061A1 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56832E388AF3453DCE4DD0 /* UserInfo.swift */; };
 		5C56833DA0979C9CB4295FEA /* Date+Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56818CB6E040228EA89456 /* Date+Correction.swift */; };
 		5C5683585608AE8A879AF911 /* Date+Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56818CB6E040228EA89456 /* Date+Correction.swift */; };
 		5C5687469B791F9CB3BC8F81 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568DC031A480F1A987DABA /* Alarm.swift */; };
+		5C5688D0AAAF1FDEA228EBC0 /* AlarmPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568EB5F000BD7217112ADC /* AlarmPlayer.swift */; };
+		5C5689C8EAE9D417329A9D76 /* AlarmPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568EB5F000BD7217112ADC /* AlarmPlayer.swift */; };
 		5C568CD57539B99028C5C4F8 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56832E388AF3453DCE4DD0 /* UserInfo.swift */; };
+		5C568E6213668398F13D2E4E /* NotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568708F722806733CA6E35 /* NotificationReceiver.swift */; };
 		7701B7B31E99414800908B6C /* UIWindow+VisibleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7701B7B21E99414800908B6C /* UIWindow+VisibleViewController.swift */; };
 		7773A0F81E43276700811A1D /* AlarmAppIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7773A0F71E43276700811A1D /* AlarmAppIdentifiers.swift */; };
 		7773A0FA1E4610B700811A1D /* SegueInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7773A0F91E4610B700811A1D /* SegueInfo.swift */; };
@@ -46,7 +50,9 @@
 /* Begin PBXFileReference section */
 		5C56818CB6E040228EA89456 /* Date+Correction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Correction.swift"; sourceTree = "<group>"; };
 		5C56832E388AF3453DCE4DD0 /* UserInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
+		5C568708F722806733CA6E35 /* NotificationReceiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationReceiver.swift; sourceTree = "<group>"; };
 		5C568DC031A480F1A987DABA /* Alarm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alarm.swift; sourceTree = "<group>"; };
+		5C568EB5F000BD7217112ADC /* AlarmPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmPlayer.swift; sourceTree = "<group>"; };
 		7701B7B21E99414800908B6C /* UIWindow+VisibleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+VisibleViewController.swift"; sourceTree = "<group>"; };
 		7773A0F71E43276700811A1D /* AlarmAppIdentifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmAppIdentifiers.swift; sourceTree = "<group>"; };
 		7773A0F91E4610B700811A1D /* SegueInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueInfo.swift; sourceTree = "<group>"; };
@@ -135,6 +141,8 @@
 				9E1F30721C49128000C66F79 /* AlarmScheduler.swift */,
 				9EED78711AA0F03F00961BC2 /* AppDelegate.swift */,
 				7773A0F71E43276700811A1D /* AlarmAppIdentifiers.swift */,
+				5C568708F722806733CA6E35 /* NotificationReceiver.swift */,
+				5C568EB5F000BD7217112ADC /* AlarmPlayer.swift */,
 			);
 			name = App;
 			sourceTree = "<group>";
@@ -356,6 +364,8 @@
 				5C5680BE3BB3B93E3F719F46 /* Alarm.swift in Sources */,
 				5C5681062EAFC8A8460061A1 /* UserInfo.swift in Sources */,
 				5C56833DA0979C9CB4295FEA /* Date+Correction.swift in Sources */,
+				5C56802F784C2A84103671A2 /* NotificationReceiver.swift in Sources */,
+				5C5689C8EAE9D417329A9D76 /* AlarmPlayer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +377,8 @@
 				5C5687469B791F9CB3BC8F81 /* Alarm.swift in Sources */,
 				5C568CD57539B99028C5C4F8 /* UserInfo.swift in Sources */,
 				5C5683585608AE8A879AF911 /* Date+Correction.swift in Sources */,
+				5C568E6213668398F13D2E4E /* NotificationReceiver.swift in Sources */,
+				5C5688D0AAAF1FDEA228EBC0 /* AlarmPlayer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

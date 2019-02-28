@@ -33,7 +33,7 @@ class LabelEditViewController: UIViewController, UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         label = textField.text!
-        performSegue(withIdentifier: AlarmAppIdentifiers.labelUnwindIdentifier, sender: self)
+        performSegue(withIdentifier: Identifier.UnwindSegue.label, sender: self)
         //This method can be used when no state passing is needed
         //navigationController?.popViewController(animated: true)
         return false
