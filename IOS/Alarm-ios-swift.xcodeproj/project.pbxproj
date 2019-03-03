@@ -21,7 +21,6 @@
 		7773A0F81E43276700811A1D /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7773A0F71E43276700811A1D /* Identifier.swift */; };
 		7773A0FA1E4610B700811A1D /* SegueInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7773A0F91E4610B700811A1D /* SegueInfo.swift */; };
 		77B08F9F1EA6552100BECF6C /* NotificationName+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B08F9E1EA6552100BECF6C /* NotificationName+Extension.swift */; };
-		77CBDC612010E8A200F5D554 /* SchedulerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CBDC602010E8A200F5D554 /* SchedulerTestCase.swift */; };
 		9E16062C1C62358F009B2407 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E16062B1C62358F009B2407 /* MediaViewController.swift */; };
 		9E1F30731C49128000C66F79 /* AlarmScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1F30721C49128000C66F79 /* AlarmScheduler.swift */; };
 		9E3B062F1BB8347000453456 /* bell.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9E3B062E1BB8347000453456 /* bell.mp3 */; };
@@ -32,7 +31,7 @@
 		9EED78771AA0F03F00961BC2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9EED78751AA0F03F00961BC2 /* Main.storyboard */; };
 		9EED78791AA0F03F00961BC2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9EED78781AA0F03F00961BC2 /* Images.xcassets */; };
 		9EED787C1AA0F03F00961BC2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EED787A1AA0F03F00961BC2 /* LaunchScreen.xib */; };
-		9EED78941AA1E51700961BC2 /* AlarmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EED78931AA1E51700961BC2 /* AlarmModel.swift */; };
+		9EED78941AA1E51700961BC2 /* AlarmModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EED78931AA1E51700961BC2 /* AlarmModelController.swift */; };
 		9EED789A1AA36C7900961BC2 /* AlarmAddEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EED78991AA36C7900961BC2 /* AlarmAddEditViewController.swift */; };
 		9EEEC58C1BC641BF00459CF7 /* MainAlarmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EEEC58B1BC641BF00459CF7 /* MainAlarmViewController.swift */; };
 /* End PBXBuildFile section */
@@ -57,7 +56,6 @@
 		7773A0F71E43276700811A1D /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		7773A0F91E4610B700811A1D /* SegueInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueInfo.swift; sourceTree = "<group>"; };
 		77B08F9E1EA6552100BECF6C /* NotificationName+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NotificationName+Extension.swift"; sourceTree = "<group>"; };
-		77CBDC602010E8A200F5D554 /* SchedulerTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerTestCase.swift; sourceTree = "<group>"; };
 		9E16062B1C62358F009B2407 /* MediaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
 		9E1F30721C49128000C66F79 /* AlarmScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmScheduler.swift; sourceTree = "<group>"; };
 		9E3B062E1BB8347000453456 /* bell.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bell.mp3; sourceTree = "<group>"; };
@@ -72,7 +70,7 @@
 		9EED787B1AA0F03F00961BC2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		9EED78811AA0F03F00961BC2 /* Alarm-ios-swiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Alarm-ios-swiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EED78861AA0F03F00961BC2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9EED78931AA1E51700961BC2 /* AlarmModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmModel.swift; sourceTree = "<group>"; };
+		9EED78931AA1E51700961BC2 /* AlarmModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmModelController.swift; sourceTree = "<group>"; };
 		9EED78991AA36C7900961BC2 /* AlarmAddEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmAddEditViewController.swift; sourceTree = "<group>"; };
 		9EEEC58B1BC641BF00459CF7 /* MainAlarmViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainAlarmViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,7 +113,7 @@
 		7751AD191E36F41E00CDED58 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				9EED78931AA1E51700961BC2 /* AlarmModel.swift */,
+				9EED78931AA1E51700961BC2 /* AlarmModelController.swift */,
 				7773A0F91E4610B700811A1D /* SegueInfo.swift */,
 				5C568DC031A480F1A987DABA /* Alarm.swift */,
 				5C56832E388AF3453DCE4DD0 /* UserInfo.swift */,
@@ -203,7 +201,6 @@
 			isa = PBXGroup;
 			children = (
 				9EED78851AA0F03F00961BC2 /* Supporting Files */,
-				77CBDC602010E8A200F5D554 /* SchedulerTestCase.swift */,
 			);
 			path = AlarmTests;
 			sourceTree = "<group>";
@@ -356,7 +353,7 @@
 				9EED78721AA0F03F00961BC2 /* AppDelegate.swift in Sources */,
 				7773A0FA1E4610B700811A1D /* SegueInfo.swift in Sources */,
 				77B08F9F1EA6552100BECF6C /* NotificationName+Extension.swift in Sources */,
-				9EED78941AA1E51700961BC2 /* AlarmModel.swift in Sources */,
+				9EED78941AA1E51700961BC2 /* AlarmModelController.swift in Sources */,
 				9E603F591BD7CA6600303E93 /* LabelEditViewController.swift in Sources */,
 				9EEEC58C1BC641BF00459CF7 /* MainAlarmViewController.swift in Sources */,
 				7701B7B31E99414800908B6C /* UIWindow+VisibleViewController.swift in Sources */,
@@ -373,7 +370,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77CBDC612010E8A200F5D554 /* SchedulerTestCase.swift in Sources */,
 				5C5687469B791F9CB3BC8F81 /* Alarm.swift in Sources */,
 				5C568CD57539B99028C5C4F8 /* UserInfo.swift in Sources */,
 				5C5683585608AE8A879AF911 /* Date+Correction.swift in Sources */,

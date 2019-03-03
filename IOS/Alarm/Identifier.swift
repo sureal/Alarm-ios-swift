@@ -42,4 +42,8 @@ struct Identifier {
         static let noSnooze = "Alarm.NotificationCategory.NoSnooze"
         static let snooze = "Alarm.NotificationCategory.Snooze"
     }
+
+    struct Persistence {
+        static let alarmListPersistKey = "Alarm.AlarmList"
+    }
 }

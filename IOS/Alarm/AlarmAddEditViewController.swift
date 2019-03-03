@@ -15,8 +15,9 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var tableView: UITableView!
 
-    var alarmScheduler = AlarmScheduler()
-    var alarmModel: AlarmModel = AlarmModel()
+    var alarmScheduler: AlarmScheduler!
+    var alarmModelController: AlarmModelController!
+
     var segueInfo: SegueInfo!
     var snoozeEnabled: Bool = false
     var enabled: Bool!
@@ -26,7 +27,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        alarmModel = AlarmModel()
+
         tableView.reloadData()
         snoozeEnabled = segueInfo.snoozeEnabled
         super.viewWillAppear(animated)
@@ -51,9 +52,9 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         tempAlarm.uuid = UUID().uuidString
         tempAlarm.onSnooze = false
         if segueInfo.isEditMode {
-            alarmModel.alarms[index] = tempAlarm
+            alarmModelController.alarms[index] = tempAlarm
         } else {
-            alarmModel.alarms.append(tempAlarm)
+            alarmModelController.alarms.append(tempAlarm)
         }
         self.performSegue(withIdentifier: Identifier.Segue.saveAddEditAlarm, sender: self)
     }
@@ -143,7 +144,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
             }
         } else if indexPath.section == 1 {
             //delete alarm
-            alarmModel.alarms.remove(at: segueInfo.curCellIndex)
+            alarmModelController.alarms.remove(at: segueInfo.curCellIndex)
             performSegue(withIdentifier: Identifier.Segue.saveAddEditAlarm, sender: self)
         }
 

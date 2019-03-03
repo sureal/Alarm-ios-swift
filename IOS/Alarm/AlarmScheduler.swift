@@ -11,9 +11,12 @@ import UIKit
 import UserNotifications
 
 class AlarmScheduler {
-    var alarmModel: AlarmModel = AlarmModel()
 
-    init() {
+    var alarmModelController: AlarmModelController!
+
+    init(alarmModelController: AlarmModelController) {
+        self.alarmModelController = alarmModelController
+
         self.setupNotificationCategories()
     }
 
@@ -152,7 +155,7 @@ class AlarmScheduler {
             let datesForNotification = self.correctDate(alarm.date, onWeekdaysForNotify: alarm.repeatWeekdays)
 
             // ???
-            self.syncAlarmModel()
+            self.alarmModelController.sync()
 
             var notificationRequests = [UNNotificationRequest]()
 
@@ -185,10 +188,10 @@ class AlarmScheduler {
 
         // TODO: better understand this part
         if alarm.onSnooze {
-            let originalDate = alarmModel.alarms[alarmIndex].date
-            alarmModel.alarms[alarmIndex].date = originalDate.toSecondsRoundedDate()
+            let originalDate = alarmModelController.alarms[alarmIndex].date
+            alarmModelController.alarms[alarmIndex].date = originalDate.toSecondsRoundedDate()
         } else {
-            alarmModel.alarms[alarmIndex].date = notificationDate
+            alarmModelController.alarms[alarmIndex].date = notificationDate
         }
 
         let isRepeating = !alarm.repeatWeekdays.isEmpty
@@ -259,10 +262,10 @@ class AlarmScheduler {
         //cancel all and register all is often more convenient
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
-        syncAlarmModel()
+        self.alarmModelController.sync()
 
-        for alarmIndex in 0..<alarmModel.alarmCount {
-            var alarm = alarmModel.alarms[alarmIndex]
+        for alarmIndex in 0..<alarmModelController.alarmCount {
+            var alarm = alarmModelController.alarms[alarmIndex]
             if alarm.enabled {
                 // TODO: check what is intended here
                 alarm.onSnooze = false
@@ -275,16 +278,16 @@ class AlarmScheduler {
     // workaround for some situation that alarm model is not setting properly (when app on background or not launched)
     func checkNotification() {
 
-        syncAlarmModel()
+        self.alarmModelController.sync()
 
         UNUserNotificationCenter.current().getPendingNotificationRequests { (pendingNotifications) in
 
             if pendingNotifications.isEmpty {
-                for alarmIndex in 0..<self.alarmModel.alarmCount {
-                    self.alarmModel.alarms[alarmIndex].enabled = false
+                for alarmIndex in 0..<self.alarmModelController.alarmCount {
+                    self.alarmModelController.alarms[alarmIndex].enabled = false
                 }
             } else {
-                for (alarmIndex, alarm) in self.alarmModel.alarms.enumerated() {
+                for (alarmIndex, alarm) in self.alarmModelController.alarms.enumerated() {
                     var isOutDated = true
                     if alarm.onSnooze {
                         isOutDated = false
@@ -301,15 +304,11 @@ class AlarmScheduler {
 
                     }
                     if isOutDated {
-                        self.alarmModel.alarms[alarmIndex].enabled = false
+                        self.alarmModelController.alarms[alarmIndex].enabled = false
                     }
                 }
             }
         }
-    }
-
-    private func syncAlarmModel() {
-        alarmModel = AlarmModel()
     }
 
     private enum WeekdayComparisonResult {

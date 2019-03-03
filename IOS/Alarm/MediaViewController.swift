@@ -21,6 +21,7 @@ class MediaViewController: UITableViewController, MPMediaPickerControllerDelegat
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        // TODO: this could be obsolete
         performSegue(withIdentifier: Identifier.UnwindSegue.saveAlarmSound, sender: self)
     }
 

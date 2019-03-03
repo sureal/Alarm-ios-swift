@@ -16,18 +16,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    let alarmScheduler = AlarmScheduler()
-    var alarmPlayer: AlarmPlayer?
-    var alarmModel: AlarmModel = AlarmModel()
-    var notificationReceiver: NotificationReceiver?
+    var alarmScheduler: AlarmScheduler!
+    var notificationReceiver: NotificationReceiver!
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        self.alarmPlayer = AlarmPlayer()
-        if let alarmPlayer = self.alarmPlayer {
-            self.notificationReceiver = NotificationReceiver(alarmPlayer: alarmPlayer, window: window)
+
+        // Create Dependencies
+        let alarmModelController = AlarmModelController()
+        self.alarmScheduler = AlarmScheduler(alarmModelController: alarmModelController)
+
+        // inject into main view controller
+        if let mainAlarmViewController = window?.rootViewController as? MainAlarmViewController {
+            mainAlarmViewController.alarmModelController = alarmModelController
+            mainAlarmViewController.alarmScheduler = alarmScheduler
         }
+
+        let alarmPlayer = AlarmPlayer()
+        self.notificationReceiver = NotificationReceiver(
+                alarmScheduler: alarmScheduler,
+                alarmModelController: alarmModelController,
+                alarmPlayer: alarmPlayer,
+                window: window)
 
         window?.tintColor = UIColor.red
 

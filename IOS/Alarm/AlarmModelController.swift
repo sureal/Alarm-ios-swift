@@ -1,5 +1,5 @@
 //
-//  AlarmModel.swift
+//  AlarmModelController.swift
 //  Alarm-ios-swift
 //
 //  Created by longyutao on 15-2-28.
@@ -10,10 +10,9 @@
 import Foundation
 import MediaPlayer
 
-class AlarmModel {
+class AlarmModelController {
 
     let userDefaults: UserDefaults = UserDefaults.standard
-    let persistKey: String = "myAlarmKey"
 
     var alarms: [Alarm] = [] {
         //observer, sync with UserDefaults
@@ -27,6 +26,10 @@ class AlarmModel {
     }
 
     init() {
+        sync()
+    }
+
+    func sync() {
         alarms = loadAlarmsFromUserDefaults()
     }
 
@@ -40,7 +43,7 @@ class AlarmModel {
                 return
             }
 
-            userDefaults.set(jsonString, forKey: persistKey)
+            userDefaults.set(jsonString, forKey: Identifier.Persistence.alarmListPersistKey)
             userDefaults.synchronize()
 
         } catch {
@@ -56,7 +59,7 @@ class AlarmModel {
 
     private func loadAlarmsFromUserDefaults() -> [Alarm] {
 
-        let jsonString = UserDefaults.standard.string(forKey: persistKey)
+        let jsonString = UserDefaults.standard.string(forKey: Identifier.Persistence.alarmListPersistKey)
         guard let json = jsonString else {
             print("No alarms found in User Defaults")
             return []

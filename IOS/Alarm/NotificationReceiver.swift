@@ -8,14 +8,14 @@ import UIKit
 
 class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
-    let alarmScheduler = AlarmScheduler()
-    var alarmModel: AlarmModel = AlarmModel()
+    let alarmScheduler: AlarmScheduler!
+    var alarmModel: AlarmModelController!
     var alarmPlayer: AlarmPlayer
-
     var window: UIWindow?
 
-    init(alarmPlayer: AlarmPlayer, window: UIWindow?) {
-
+    init(alarmScheduler: AlarmScheduler!, alarmModelController: AlarmModelController!, alarmPlayer: AlarmPlayer, window: UIWindow?) {
+        self.alarmScheduler = alarmScheduler
+        self.alarmModel = alarmModelController
         self.alarmPlayer = alarmPlayer
         self.window = window
         super.init()
@@ -53,7 +53,6 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
             self.alarmPlayer.stopSound()
 
-            self.alarmModel = AlarmModel()
             self.alarmModel.alarms[userInfo.index].onSnooze = false
             //change UI
             var mainVC = self.window?.visibleViewController as? MainAlarmViewController
@@ -82,7 +81,6 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
         let userInfoDict = response.notification.request.content.userInfo
         let userInfo = UserInfo(userInfo: userInfoDict)
 
-        self.alarmModel = AlarmModel()
         self.alarmModel.alarms[userInfo.index].onSnooze = false
         if response.actionIdentifier == Identifier.NotificationAction.snooze {
             alarmScheduler.setNotificationForSnooze(
