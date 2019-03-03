@@ -11,18 +11,20 @@ import Foundation
 struct Identifier {
 
     struct Segue {
-        static let add = "addSegue"
-        static let edit = "editSegue"
-        static let save = "saveEditSegue"
-        static let sound = "soundSegue"
-        static let label = "labelEditSegue"
-        static let weekdays = "weekdaysSegue"
+        static let addAlarm = "addAlarmSegue"
+        static let editAlarm = "editAlarmSegue"
+        static let saveAddEditAlarm = "saveEditAlarmSegue"
+        static let setAlarmSound = "setAlarmSoundSegue"
+        static let editAlarmName = "editAlarmNameSegue"
+        static let setWeekdaysRepeating = "setWeekdaysSegue"
     }
 
     struct UnwindSegue {
-        static let label = "labelUnwindSegue"
-        static let sound = "soundUnwindSegue"
-        static let weekdays = "weekdaysUnwindSegue"
+        static let saveAlarmName = "alarmNameUnwindSegue"
+        static let saveAlarmSound = "setSoundUnwindSegue"
+        static let safeWeekdaysRepeating = "weekdaysUnwindSegue"
+        static let cancelAddAlarm = "cancelAddAlarmSegue"
+        static let saveAddEditAlarm = "saveEditAlarmUnwindSegue"
     }
 
     struct TableCell {

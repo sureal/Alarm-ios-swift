@@ -11,7 +11,7 @@ import UIKit
 class LabelEditViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var labelTextField: UITextField!
-    var label: String!
+    var alarmNameToDisplay: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +19,7 @@ class LabelEditViewController: UIViewController, UITextFieldDelegate {
         // Do any additional setup after loading the view.
         self.labelTextField.delegate = self
         
-        labelTextField.text = label
+        labelTextField.text = alarmNameToDisplay
         
         //defined in UITextInputTraits protocol
         labelTextField.returnKeyType = UIReturnKeyType.done
@@ -31,12 +31,11 @@ class LabelEditViewController: UIViewController, UITextFieldDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        label = textField.text!
-        performSegue(withIdentifier: Identifier.UnwindSegue.label, sender: self)
-        //This method can be used when no state passing is needed
-        //navigationController?.popViewController(animated: true)
-        return false
+    func getAlarmName() -> String {
+        guard let alarmName = self.labelTextField.text else {
+            return ""
+        }
+        return alarmName
     }
 
 }

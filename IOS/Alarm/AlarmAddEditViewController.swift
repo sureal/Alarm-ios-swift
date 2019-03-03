@@ -55,7 +55,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         } else {
             alarmModel.alarms.append(tempAlarm)
         }
-        self.performSegue(withIdentifier: Identifier.Segue.save, sender: self)
+        self.performSegue(withIdentifier: Identifier.Segue.saveAddEditAlarm, sender: self)
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -127,15 +127,15 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         if indexPath.section == 0 {
             switch indexPath.row {
             case 0:
-                performSegue(withIdentifier: Identifier.Segue.weekdays, sender: self)
+                performSegue(withIdentifier: Identifier.Segue.setWeekdaysRepeating, sender: self)
                 cell?.setSelected(true, animated: false)
                 cell?.setSelected(false, animated: false)
             case 1:
-                performSegue(withIdentifier: Identifier.Segue.label, sender: self)
+                performSegue(withIdentifier: Identifier.Segue.editAlarmName, sender: self)
                 cell?.setSelected(true, animated: false)
                 cell?.setSelected(false, animated: false)
             case 2:
-                performSegue(withIdentifier: Identifier.Segue.sound, sender: self)
+                performSegue(withIdentifier: Identifier.Segue.setAlarmSound, sender: self)
                 cell?.setSelected(true, animated: false)
                 cell?.setSelected(false, animated: false)
             default:
@@ -144,7 +144,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         } else if indexPath.section == 1 {
             //delete alarm
             alarmModel.alarms.remove(at: segueInfo.curCellIndex)
-            performSegue(withIdentifier: Identifier.Segue.save, sender: self)
+            performSegue(withIdentifier: Identifier.Segue.saveAddEditAlarm, sender: self)
         }
 
     }
@@ -159,7 +159,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        if segue.identifier == Identifier.Segue.save {
+        if segue.identifier == Identifier.Segue.saveAddEditAlarm {
 
             if let destinationViewController = segue.destination as? MainAlarmViewController {
 
@@ -174,7 +174,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
                 alarmScheduler.recreateNotificationsFromDataModel()
             }
 
-        } else if segue.identifier == Identifier.Segue.sound {
+        } else if segue.identifier == Identifier.Segue.setAlarmSound {
 
             if let destinationViewController = segue.destination as? MediaViewController {
 
@@ -182,13 +182,13 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
                 destinationViewController.mediaLabel = segueInfo.mediaLabel
             }
 
-        } else if segue.identifier == Identifier.Segue.label {
+        } else if segue.identifier == Identifier.Segue.editAlarmName {
             if let destinationViewController = segue.destination as? LabelEditViewController {
 
-                destinationViewController.label = segueInfo.label
+                destinationViewController.alarmNameToDisplay = segueInfo.label
             }
 
-        } else if segue.identifier == Identifier.Segue.weekdays {
+        } else if segue.identifier == Identifier.Segue.setWeekdaysRepeating {
             if let destinationViewController = segue.destination as? WeekdaysViewController {
 
                 destinationViewController.weekdays = segueInfo.repeatWeekdays
@@ -196,9 +196,9 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         }
     }
 
-    @IBAction func unwindFromLabelEditView(_ segue: UIStoryboardSegue) {
+    @IBAction func unwindFromAlarmNameEditView(_ segue: UIStoryboardSegue) {
         if let sourceViewController = segue.source as? LabelEditViewController {
-            segueInfo.label = sourceViewController.label
+            segueInfo.label = sourceViewController.getAlarmName()
         }
     }
 
