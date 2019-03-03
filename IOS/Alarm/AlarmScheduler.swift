@@ -30,7 +30,6 @@ class AlarmScheduler {
                 title: "Snooze",
                 options: [])
 
-
         // create categories
         let snoozeNotificationCategory = UNNotificationCategory(
                 identifier: Identifier.NotificationCategory.snooze,
@@ -57,7 +56,7 @@ class AlarmScheduler {
         }
     }
 
-    private func requestNotificationAuthorization() {
+    func requestNotificationAuthorization(authorisationGranted: @escaping (Bool) -> Void) {
         let options: UNAuthorizationOptions = [.alert, .sound]
         UNUserNotificationCenter.current().requestAuthorization(options: options) { (granted, error) in
             if !granted {
@@ -67,9 +66,13 @@ class AlarmScheduler {
                 }
 
                 // TODO: show alert view explaining why it sucks to have no permissions,
-                // pressing OK, ask again, pressing cancel accept the result, which is OK as we will ask again on next creation atempt
+                // pressing OK, ask again, pressing cancel accept the result, which is
+                // OK as we will ask again on next creation atempt
 
+                authorisationGranted(false)
 
+            } else {
+                authorisationGranted(true)
             }
         }
     }
@@ -131,16 +134,94 @@ class AlarmScheduler {
 
     func createNotification(forAlarm alarm: Alarm, alarmIndex: Int) {
 
-        requestNotificationAuthorization()
+        requestNotificationAuthorization { granted in
 
-        let repeating: Bool = !alarm.repeatWeekdays.isEmpty
+            if !granted {
+                print("ERROR: Cannot create notification without user's permission")
+                return
+            }
+
+            let content = self.createNotificationContent(alarm: alarm, alarmIndex: alarmIndex)
+
+            //repeat weekly if repeat weekdays are selected
+            //no repeat with snooze notification
+            //if !weekdays.isEmpty && !onSnooze{
+            //  AlarmNotification.repeatInterval = NSCalendar.Unit.weekOfYear
+            //}
+
+            let datesForNotification = self.correctDate(alarm.date, onWeekdaysForNotify: alarm.repeatWeekdays)
+
+            // ???
+            self.syncAlarmModel()
+
+            var notificationRequests = [UNNotificationRequest]()
+
+            for notificationDate in datesForNotification {
+                
+                let alarmNotificationRequest = self.createNotificationRequest(
+                        alarm: alarm,
+                        alarmIndex: alarmIndex,
+                        notificationDate: notificationDate,
+                        content: content)
+
+                notificationRequests.append(alarmNotificationRequest)
+            }
+
+            for notificationRequest in notificationRequests {
+                UNUserNotificationCenter.current().add(notificationRequest) { (error) in
+
+                    if let error = error {
+                        print("Unable to Add Notification Request: \(error)")
+                    }
+                }
+            }
+        }
+    }
+
+    private func createNotificationRequest(alarm: Alarm,
+                                           alarmIndex: Int,
+                                           notificationDate: Date,
+                                           content: UNMutableNotificationContent) -> UNNotificationRequest {
+
+        // TODO: better understand this part
+        if alarm.onSnooze {
+            let originalDate = alarmModel.alarms[alarmIndex].date
+            alarmModel.alarms[alarmIndex].date = originalDate.toSecondsRoundedDate()
+        } else {
+            alarmModel.alarms[alarmIndex].date = notificationDate
+        }
+
+        let isRepeating = !alarm.repeatWeekdays.isEmpty
+        let notificationDateTrigger = createNotificationTrigger(
+            notificationDate: notificationDate,
+            isRepeating: isRepeating)
+
+        let alarmNotificationRequest = UNNotificationRequest(
+                identifier: "NotificationRequest_\(notificationDate.timeIntervalSince1970)",
+                content: content,
+                trigger: notificationDateTrigger)
+
+        return alarmNotificationRequest
+    }
+
+    private func createNotificationTrigger(notificationDate: Date, isRepeating: Bool) -> UNCalendarNotificationTrigger {
+
+        let notificationDateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: notificationDate)
+
+        let notificationDateTrigger = UNCalendarNotificationTrigger(
+                dateMatching: notificationDateComponents,
+                repeats: isRepeating)
+        return notificationDateTrigger
+    }
+
+    private func createNotificationContent(alarm: Alarm, alarmIndex: Int) -> UNMutableNotificationContent {
 
         let content = UNMutableNotificationContent()
         content.title = "A TITLE TODO Replace"
         content.body = "Wake Up!"
         // TODO: think about criticalSound
         content.sound = UNNotificationSound(named: UNNotificationSoundName(alarm.mediaLabel + ".mp3"))
-        if(alarm.snoozeEnabled) {
+        if alarm.snoozeEnabled {
             content.categoryIdentifier = Identifier.NotificationCategory.snooze
         } else {
             content.categoryIdentifier = Identifier.NotificationCategory.noSnooze
@@ -150,54 +231,13 @@ class AlarmScheduler {
         userInfo.index = alarmIndex
         userInfo.soundName = alarm.mediaLabel
         userInfo.isSnoozeEnabled = alarm.snoozeEnabled
+        let repeating: Bool = !alarm.repeatWeekdays.isEmpty
         userInfo.repeating = repeating
 
         // add user info to content
         content.userInfo = userInfo.userInfoDictionary
 
-        //repeat weekly if repeat weekdays are selected
-        //no repeat with snooze notification
-        //if !weekdays.isEmpty && !onSnooze{
-        //  AlarmNotification.repeatInterval = NSCalendar.Unit.weekOfYear
-        //}
-
-        let datesForNotification = correctDate(alarm.date, onWeekdaysForNotify: alarm.repeatWeekdays)
-
-        // ???
-        syncAlarmModel()
-
-        var notificationRequests = [UNNotificationRequest]()
-        for notificationDate in datesForNotification {
-            if alarm.onSnooze {
-                let originalDate = alarmModel.alarms[alarmIndex].date
-                alarmModel.alarms[alarmIndex].date = originalDate.toSecondsRoundedDate()
-            } else {
-                alarmModel.alarms[alarmIndex].date = notificationDate
-            }
-
-            let notificationDateComponents = Calendar.current.dateComponents(
-                    in: TimeZone.current,
-                    from: notificationDate)
-            let notificationDateTrigger = UNCalendarNotificationTrigger(
-                    dateMatching: notificationDateComponents,
-                    repeats: repeating)
-            let alarmNotificationRequest = UNNotificationRequest(
-                    identifier: "NotificationRequest_\(notificationDate.timeIntervalSince1970)",
-                    content: content,
-                    trigger: notificationDateTrigger)
-
-
-            notificationRequests.append(alarmNotificationRequest)
-        }
-
-        for notificationRequest in notificationRequests {
-            UNUserNotificationCenter.current().add(notificationRequest) { (error) in
-
-                if let error = error {
-                    print("Unable to Add Notification Request: \(error)")
-                }
-            }
-        }
+        return content
     }
 
     func setNotificationForSnooze(snoozeForMinutes: Int, soundName: String, index: Int) {

@@ -6,7 +6,7 @@ import Foundation
 import UserNotifications
 import UIKit
 
-class NotificationReceiver : NSObject, UNUserNotificationCenterDelegate {
+class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
     let alarmScheduler = AlarmScheduler()
     var alarmModel: AlarmModel = AlarmModel()
@@ -98,6 +98,5 @@ class NotificationReceiver : NSObject, UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
         print("userNotificationCenter:openSettingsFor")
     }
-
 
 }

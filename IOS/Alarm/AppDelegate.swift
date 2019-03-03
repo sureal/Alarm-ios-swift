@@ -34,8 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-
-
     //UIApplicationDelegate protocol
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain
@@ -70,6 +68,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate.
         // See also applicationDidEnterBackground:.
     }
-
 
 }
