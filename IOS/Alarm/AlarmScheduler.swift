@@ -152,7 +152,7 @@ class AlarmScheduler {
             //  AlarmNotification.repeatInterval = NSCalendar.Unit.weekOfYear
             //}
 
-            let datesForNotification = self.correctDate(alarm.date, onWeekdaysForNotify: alarm.repeatWeekdays)
+            let datesForNotification = self.correctDate(alarm.alertDate, onWeekdaysForNotify: alarm.repeatAtWeekdays)
 
             // ???
             self.alarmModelController.sync()
@@ -188,13 +188,13 @@ class AlarmScheduler {
 
         // TODO: better understand this part
         if alarm.onSnooze {
-            let originalDate = alarmModelController.alarms[alarmIndex].date
-            alarmModelController.alarms[alarmIndex].date = originalDate.toSecondsRoundedDate()
+            let originalDate = alarmModelController.alarms[alarmIndex].alertDate
+            alarmModelController.alarms[alarmIndex].alertDate = originalDate.toSecondsRoundedDate()
         } else {
-            alarmModelController.alarms[alarmIndex].date = notificationDate
+            alarmModelController.alarms[alarmIndex].alertDate = notificationDate
         }
 
-        let isRepeating = !alarm.repeatWeekdays.isEmpty
+        let isRepeating = !alarm.repeatAtWeekdays.isEmpty
         let notificationDateTrigger = createNotificationTrigger(
             notificationDate: notificationDate,
             isRepeating: isRepeating)
@@ -234,7 +234,7 @@ class AlarmScheduler {
         userInfo.index = alarmIndex
         userInfo.soundName = alarm.mediaLabel
         userInfo.isSnoozeEnabled = alarm.snoozeEnabled
-        let repeating: Bool = !alarm.repeatWeekdays.isEmpty
+        let repeating: Bool = !alarm.repeatAtWeekdays.isEmpty
         userInfo.repeating = repeating
 
         // add user info to content
@@ -249,8 +249,8 @@ class AlarmScheduler {
         let snoozeTime = now.toSomeMinutesLaterDate(minutesToAdd: snoozeForMinutes)
 
         var snoozeAlarm = Alarm()
-        snoozeAlarm.date = snoozeTime
-        snoozeAlarm.repeatWeekdays = [Int]()
+        snoozeAlarm.alertDate = snoozeTime
+        snoozeAlarm.repeatAtWeekdays = [Int]()
         snoozeAlarm.snoozeEnabled = true
         snoozeAlarm.onSnooze = true
         snoozeAlarm.mediaLabel = soundName
@@ -296,7 +296,7 @@ class AlarmScheduler {
                         if let trigger = notification.trigger as? UNCalendarNotificationTrigger {
 
                             if let nextFireDate = trigger.nextTriggerDate() {
-                                if alarm.date >= nextFireDate {
+                                if alarm.alertDate >= nextFireDate {
                                     isOutDated = false
                                 }
                             }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LabelEditViewController: UIViewController, UITextFieldDelegate {
+class AlarmNameEditViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var labelTextField: UITextField!
     var alarmNameToDisplay: String!

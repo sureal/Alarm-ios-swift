@@ -37,26 +37,27 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         super.didReceiveMemoryWarning()
     }
 
-    @IBAction func saveEditAlarm(_ sender: AnyObject) {
-
+    @IBAction func saveAlarm(_ sender: UIBarButtonItem) {
+        
         let date = datePicker.date.toSecondsRoundedDate()
         let index = segueInfo.curCellIndex
         var tempAlarm = Alarm()
-        tempAlarm.date = date
-        tempAlarm.label = segueInfo.label
+        tempAlarm.alertDate = date
+        tempAlarm.alarmName = segueInfo.label
         tempAlarm.enabled = true
         tempAlarm.mediaLabel = segueInfo.mediaLabel
         tempAlarm.mediaID = segueInfo.mediaID
         tempAlarm.snoozeEnabled = snoozeEnabled
-        tempAlarm.repeatWeekdays = segueInfo.repeatWeekdays
-        tempAlarm.uuid = UUID().uuidString
+        tempAlarm.repeatAtWeekdays = segueInfo.repeatWeekdays
+        tempAlarm.alarmID = UUID().uuidString
         tempAlarm.onSnooze = false
         if segueInfo.isEditMode {
             alarmModelController.alarms[index] = tempAlarm
         } else {
             alarmModelController.alarms.append(tempAlarm)
         }
-        self.performSegue(withIdentifier: Identifier.Segue.saveAddEditAlarm, sender: self)
+        
+        self.performSegue(withIdentifier: Identifier.UnwindSegue.saveAddEditAlarm, sender: self)
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -158,6 +159,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         if segue.identifier == Identifier.Segue.saveAddEditAlarm {
@@ -177,19 +179,21 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
 
         } else if segue.identifier == Identifier.Segue.setAlarmSound {
 
-            if let destinationViewController = segue.destination as? MediaViewController {
+            if let destinationViewController = segue.destination as? AlarmSoundEditViewController {
 
                 destinationViewController.mediaID = segueInfo.mediaID
                 destinationViewController.mediaLabel = segueInfo.mediaLabel
             }
 
         } else if segue.identifier == Identifier.Segue.editAlarmName {
-            if let destinationViewController = segue.destination as? LabelEditViewController {
+
+            if let destinationViewController = segue.destination as? AlarmNameEditViewController {
 
                 destinationViewController.alarmNameToDisplay = segueInfo.label
             }
 
         } else if segue.identifier == Identifier.Segue.setWeekdaysRepeating {
+
             if let destinationViewController = segue.destination as? WeekdaysViewController {
 
                 destinationViewController.weekdays = segueInfo.repeatWeekdays
@@ -197,20 +201,20 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         }
     }
 
-    @IBAction func unwindFromAlarmNameEditView(_ segue: UIStoryboardSegue) {
-        if let sourceViewController = segue.source as? LabelEditViewController {
+    @IBAction func unwindFromAlarmNameEditViewController(_ segue: UIStoryboardSegue) {
+        if let sourceViewController = segue.source as? AlarmNameEditViewController {
             segueInfo.label = sourceViewController.getAlarmName()
         }
     }
 
-    @IBAction func unwindFromWeekdaysView(_ segue: UIStoryboardSegue) {
+    @IBAction func unwindFromWeekdaysViewController(_ segue: UIStoryboardSegue) {
         if let sourceViewController = segue.source as? WeekdaysViewController {
             segueInfo.repeatWeekdays = sourceViewController.weekdays
         }
     }
 
-    @IBAction func unwindFromMediaView(_ segue: UIStoryboardSegue) {
-        if let sourceViewController = segue.source as? MediaViewController {
+    @IBAction func unwindFromAlarmSoundEditViewController(_ segue: UIStoryboardSegue) {
+        if let sourceViewController = segue.source as? AlarmSoundEditViewController {
             segueInfo.mediaLabel = sourceViewController.mediaLabel
             segueInfo.mediaID = sourceViewController.mediaID
         }

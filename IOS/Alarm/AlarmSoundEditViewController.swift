@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class MediaViewController: UITableViewController, MPMediaPickerControllerDelegate {
+class AlarmSoundEditViewController: UITableViewController, MPMediaPickerControllerDelegate {
 
     fileprivate let numberOfRingtones = 2
     var mediaItem: MPMediaItem?

@@ -22,8 +22,8 @@ struct Identifier {
     struct UnwindSegue {
         static let saveAlarmName = "alarmNameUnwindSegue"
         static let saveAlarmSound = "setSoundUnwindSegue"
-        static let safeWeekdaysRepeating = "weekdaysUnwindSegue"
-        static let cancelAddAlarm = "cancelAddAlarmSegue"
+        static let saveWeekdaysRepeating = "weekdaysUnwindSegue"
+        static let cancelAddAlarm = "cancelAddAlarmUnwindSegue"
         static let saveAddEditAlarm = "saveEditAlarmUnwindSegue"
     }
 

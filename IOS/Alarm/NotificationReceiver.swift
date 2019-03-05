@@ -8,12 +8,12 @@ import UIKit
 
 class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
-    let alarmScheduler: AlarmScheduler!
-    var alarmModel: AlarmModelController!
+    let alarmScheduler: AlarmScheduler
+    var alarmModel: AlarmModelController
     var alarmPlayer: AlarmPlayer
     var window: UIWindow?
 
-    init(alarmScheduler: AlarmScheduler!, alarmModelController: AlarmModelController!, alarmPlayer: AlarmPlayer, window: UIWindow?) {
+    init(alarmScheduler: AlarmScheduler!, alarmModelController: AlarmModelController, alarmPlayer: AlarmPlayer, window: UIWindow?) {
         self.alarmScheduler = alarmScheduler
         self.alarmModel = alarmModelController
         self.alarmPlayer = alarmPlayer

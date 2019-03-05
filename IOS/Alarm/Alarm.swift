@@ -7,37 +7,24 @@ import Foundation
 
 struct Alarm: Codable {
 
-    var date: Date = Date()
+    var alarmID: String = ""
+    var alarmName: String = "Alarm"
+    var alertDate: Date = Date()
     var enabled: Bool = false
     var snoozeEnabled: Bool = false
-    var repeatWeekdays: [Int] = []
-    var uuid: String = ""
+    var repeatAtWeekdays: [Int] = []
+
     var mediaID: String = ""
     var mediaLabel: String = "bell"
-    var label: String = "Alarm"
+
     var onSnooze: Bool = false
 
     init() {
     }
 
-    init(date: Date, enabled: Bool, snoozeEnabled: Bool, repeatWeekdays: [Int],
-         uuid: String, mediaID: String, mediaLabel: String, label: String,
-         onSnooze: Bool) {
-
-        self.date = date
-        self.enabled = enabled
-        self.snoozeEnabled = snoozeEnabled
-        self.repeatWeekdays = repeatWeekdays
-        self.uuid = uuid
-        self.mediaID = mediaID
-        self.mediaLabel = mediaLabel
-        self.label = label
-        self.onSnooze = onSnooze
-    }
-
     func formattedTime() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
-        return dateFormatter.string(from: self.date)
+        return dateFormatter.string(from: self.alertDate)
     }
 }

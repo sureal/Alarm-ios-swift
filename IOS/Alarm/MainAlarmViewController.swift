@@ -60,10 +60,10 @@ class MainAlarmViewController: UITableViewController {
         if isEditing {
             let sender = SegueInfo(
                     curCellIndex: indexPath.row,
-                    isEditMode: true, label: alarmModelController.alarms[indexPath.row].label,
+                    isEditMode: true, label: alarmModelController.alarms[indexPath.row].alarmName,
                     mediaLabel: alarmModelController.alarms[indexPath.row].mediaLabel,
                     mediaID: alarmModelController.alarms[indexPath.row].mediaID,
-                    repeatWeekdays: alarmModelController.alarms[indexPath.row].repeatWeekdays,
+                    repeatWeekdays: alarmModelController.alarms[indexPath.row].repeatAtWeekdays,
                     enabled: alarmModelController.alarms[indexPath.row].enabled,
                     snoozeEnabled: alarmModelController.alarms[indexPath.row].snoozeEnabled)
 
@@ -91,7 +91,7 @@ class MainAlarmViewController: UITableViewController {
         let timeRange = NSRange(location: 0, length: attributedTimeText.length - 2)
         attributedTimeText.addAttributes(timeAttr, range: timeRange)
         cell!.textLabel?.attributedText = attributedTimeText
-        cell!.detailTextLabel?.text = alarm.label
+        cell!.detailTextLabel?.text = alarm.alarmName
         //append switch button
         let uiSwitch = UISwitch(frame: CGRect())
         uiSwitch.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
@@ -171,26 +171,26 @@ class MainAlarmViewController: UITableViewController {
             print("ERROR: Destination view controller is not a navigation controller")
             return
         }
-        guard let addEditController = destinationViewController.topViewController as? AlarmAddEditViewController else {
+        guard let alarmAddEditController = destinationViewController.topViewController as? AlarmAddEditViewController else {
             print("ERROR: Destination top view controller is not a AlarmAddEditViewController")
             return
         }
 
         // inject dependencies
-        addEditController.alarmModelController = self.alarmModelController
-        addEditController.alarmScheduler = self.alarmScheduler
+        alarmAddEditController.alarmModelController = self.alarmModelController
+        alarmAddEditController.alarmScheduler = self.alarmScheduler
 
         if segue.identifier == Identifier.Segue.addAlarm {
-            addEditController.navigationItem.title = "Add Alarm"
-            addEditController.segueInfo = SegueInfo(curCellIndex: alarmModelController.alarmCount,
+            alarmAddEditController.navigationItem.title = "Add Alarm"
+            alarmAddEditController.segueInfo = SegueInfo(curCellIndex: alarmModelController.alarmCount,
                     isEditMode: false, label: "Alarm", mediaLabel: "bell", mediaID: "",
                     repeatWeekdays: [], enabled: false, snoozeEnabled: false)
 
         } else if segue.identifier == Identifier.Segue.editAlarm {
-            addEditController.navigationItem.title = "Edit Alarm"
+            alarmAddEditController.navigationItem.title = "Edit Alarm"
 
             if let segueInfo = sender as? SegueInfo {
-                addEditController.segueInfo = segueInfo
+                alarmAddEditController.segueInfo = segueInfo
             } else {
                 print("SHIT!")
             }
@@ -205,14 +205,14 @@ class MainAlarmViewController: UITableViewController {
         //let info = notification.userInfo as! [String: AnyObject]
         //let index: Int = info["index"] as! Int
 
-        if alarmModelController.alarms[index].repeatWeekdays.isEmpty {
+        if alarmModelController.alarms[index].repeatAtWeekdays.isEmpty {
             alarmModelController.alarms[index].enabled = false
         }
         let cells = tableView.visibleCells
         for cell in cells where cell.tag == index {
 
             if let uiSwitch = cell.accessoryView as? UISwitch {
-                if alarmModelController.alarms[index].repeatWeekdays.isEmpty {
+                if alarmModelController.alarms[index].repeatAtWeekdays.isEmpty {
                     uiSwitch.setOn(false, animated: false)
                     cell.backgroundColor = UIColor.groupTableViewBackground
                     cell.textLabel?.alpha = 0.5

@@ -27,11 +27,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let alarmModelController = AlarmModelController()
         self.alarmScheduler = AlarmScheduler(alarmModelController: alarmModelController)
 
-        // inject into main view controller
-        if let mainAlarmViewController = window?.rootViewController as? MainAlarmViewController {
-            mainAlarmViewController.alarmModelController = alarmModelController
-            mainAlarmViewController.alarmScheduler = alarmScheduler
+        guard let rootNavController = window?.rootViewController as? UINavigationController else {
+            return false
         }
+        // inject into main view controller
+        guard let mainAlarmViewController = rootNavController.topViewController as? MainAlarmViewController else {
+            return false
+        }
+        mainAlarmViewController.alarmModelController = alarmModelController
+        mainAlarmViewController.alarmScheduler = alarmScheduler
 
         let alarmPlayer = AlarmPlayer()
         self.notificationReceiver = NotificationReceiver(

@@ -130,22 +130,22 @@
                     <navigationItem key="navigationItem" title="Add Alarm" id="eMP-mk-C6U">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="yrj-B4-lyA">
                             <connections>
-                                <segue destination="c81-oW-ugr" kind="unwind" identifier="cancelAddAlarmSegue" unwindAction="unwindFromAddEditAlarmView:" id="Qb0-PY-wf7"/>
+                                <segue destination="c81-oW-ugr" kind="unwind" identifier="cancelAddAlarmUnwindSegue" unwindAction="unwindFromAddEditAlarmView:" id="Thc-hF-KvM"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="save" id="k9T-Tn-MhG">
                             <connections>
-                                <action selector="saveEditAlarm:" destination="Hc0-91-jHo" id="lg7-I3-xmt"/>
+                                <action selector="saveAlarm:" destination="Hc0-91-jHo" id="Y0F-QR-Jlg"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="datePicker" destination="NSI-4y-VRm" id="WMC-hi-0LX"/>
                         <outlet property="tableView" destination="Sig-gf-rWO" id="0Tj-Xh-2qs"/>
-                        <segue destination="c81-oW-ugr" kind="unwind" identifier="saveEditAlarmUnwindSegue" unwindAction="unwindFromAddEditAlarmView:" id="H3X-Pk-MH9"/>
                         <segue destination="MmK-Sj-jZ1" kind="show" identifier="setWeekdaysSegue" id="P0y-9x-cTb"/>
                         <segue destination="Eno-9x-e90" kind="show" identifier="editAlarmNameSegue" id="adI-dQ-7Cn"/>
                         <segue destination="QpM-GR-Mpm" kind="show" identifier="setAlarmSoundSegue" id="OqL-Y8-9Q4"/>
+                        <segue destination="c81-oW-ugr" kind="unwind" identifier="saveEditAlarmUnwindSegue" unwindAction="unwindFromAddEditAlarmView:" id="KtW-QD-XEG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="m0s-w4-sVD" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -292,21 +292,22 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Repeat" id="sRP-fD-WPW">
-                        <barButtonItem key="backBarButtonItem" title="Back" id="GwP-OT-vDV"/>
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="usf-or-IFl">
+                            <connections>
+                                <segue destination="LUr-aB-rih" kind="unwind" identifier="weekdaysUnwindSegue" unwindAction="unwindFromWeekdaysViewController:" id="GbV-Zh-9uT"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
-                    <connections>
-                        <segue destination="LUr-aB-rih" kind="unwind" identifier="weekdaysUnwindSegue" unwindAction="unwindFromWeekdaysView:" id="wZi-qW-l9Y"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Ys-E3-H2M" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="LUr-aB-rih" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3694" y="576"/>
         </scene>
-        <!--MediaViewController-->
+        <!--AlarmSoundEditViewController-->
         <scene sceneID="PpJ-e3-tlu">
             <objects>
-                <tableViewController id="QpM-GR-Mpm" userLabel="MediaViewController" customClass="MediaViewController" customModule="Alarm_ios_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="QpM-GR-Mpm" userLabel="AlarmSoundEditViewController" customClass="AlarmSoundEditViewController" customModule="Alarm_ios_swift" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="lZ9-bY-kKX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -329,7 +330,7 @@
                     <navigationItem key="navigationItem" title="Choose sound" id="eJG-As-emt">
                         <barButtonItem key="leftBarButtonItem" title="Back" id="EdK-IV-m6i">
                             <connections>
-                                <segue destination="bPw-LI-F89" kind="unwind" identifier="setSoundUnwindSegue" unwindAction="unwindFromMediaView:" id="ocN-sD-OQY"/>
+                                <segue destination="bPw-LI-F89" kind="unwind" identifier="setSoundUnwindSegue" unwindAction="unwindFromAlarmSoundEditViewController:" id="F7a-uF-QaB"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -339,10 +340,10 @@
             </objects>
             <point key="canvasLocation" x="4666" y="577"/>
         </scene>
-        <!--LabelEditViewController-->
+        <!--AlarmNameEditViewController-->
         <scene sceneID="ck0-2C-80R">
             <objects>
-                <viewController id="Eno-9x-e90" userLabel="LabelEditViewController" customClass="LabelEditViewController" customModule="Alarm_ios_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Eno-9x-e90" userLabel="AlarmNameEditViewController" customClass="AlarmNameEditViewController" customModule="Alarm_ios_swift" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1cM-HH-WjN"/>
                         <viewControllerLayoutGuide type="bottom" id="msd-Ue-IZj"/>
@@ -370,7 +371,7 @@
                     <navigationItem key="navigationItem" title="Alarm Name" id="89R-sU-zXe">
                         <barButtonItem key="leftBarButtonItem" title="Back" id="QRv-4v-Sqx" userLabel="Back">
                             <connections>
-                                <segue destination="pPM-ke-U5P" kind="unwind" identifier="alarmNameUnwindSegue" unwindAction="unwindFromAlarmNameEditView:" id="Tgd-qU-teH"/>
+                                <segue destination="pPM-ke-U5P" kind="unwind" identifier="alarmNameUnwindSegue" unwindAction="unwindFromAlarmNameEditViewController:" id="G1e-ku-edg"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

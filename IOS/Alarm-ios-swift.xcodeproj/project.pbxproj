@@ -21,10 +21,10 @@
 		7773A0F81E43276700811A1D /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7773A0F71E43276700811A1D /* Identifier.swift */; };
 		7773A0FA1E4610B700811A1D /* SegueInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7773A0F91E4610B700811A1D /* SegueInfo.swift */; };
 		77B08F9F1EA6552100BECF6C /* NotificationName+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B08F9E1EA6552100BECF6C /* NotificationName+Extension.swift */; };
-		9E16062C1C62358F009B2407 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E16062B1C62358F009B2407 /* MediaViewController.swift */; };
+		9E16062C1C62358F009B2407 /* AlarmSoundEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E16062B1C62358F009B2407 /* AlarmSoundEditViewController.swift */; };
 		9E1F30731C49128000C66F79 /* AlarmScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1F30721C49128000C66F79 /* AlarmScheduler.swift */; };
 		9E3B062F1BB8347000453456 /* bell.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9E3B062E1BB8347000453456 /* bell.mp3 */; };
-		9E603F591BD7CA6600303E93 /* LabelEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E603F581BD7CA6600303E93 /* LabelEditViewController.swift */; };
+		9E603F591BD7CA6600303E93 /* AlarmNameEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E603F581BD7CA6600303E93 /* AlarmNameEditViewController.swift */; };
 		9E92445B1C690A8D00724DFA /* tickle.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9E92445A1C690A8D00724DFA /* tickle.mp3 */; };
 		9E9BEE071BCF8FF8000CF364 /* WeekdaysViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9BEE061BCF8FF8000CF364 /* WeekdaysViewController.swift */; };
 		9EED78721AA0F03F00961BC2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EED78711AA0F03F00961BC2 /* AppDelegate.swift */; };
@@ -56,10 +56,10 @@
 		7773A0F71E43276700811A1D /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		7773A0F91E4610B700811A1D /* SegueInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueInfo.swift; sourceTree = "<group>"; };
 		77B08F9E1EA6552100BECF6C /* NotificationName+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NotificationName+Extension.swift"; sourceTree = "<group>"; };
-		9E16062B1C62358F009B2407 /* MediaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
+		9E16062B1C62358F009B2407 /* AlarmSoundEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmSoundEditViewController.swift; sourceTree = "<group>"; };
 		9E1F30721C49128000C66F79 /* AlarmScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmScheduler.swift; sourceTree = "<group>"; };
 		9E3B062E1BB8347000453456 /* bell.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bell.mp3; sourceTree = "<group>"; };
-		9E603F581BD7CA6600303E93 /* LabelEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelEditViewController.swift; sourceTree = "<group>"; };
+		9E603F581BD7CA6600303E93 /* AlarmNameEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmNameEditViewController.swift; sourceTree = "<group>"; };
 		9E92445A1C690A8D00724DFA /* tickle.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = tickle.mp3; sourceTree = "<group>"; };
 		9E9BEE061BCF8FF8000CF364 /* WeekdaysViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekdaysViewController.swift; sourceTree = "<group>"; };
 		9EED786C1AA0F03F00961BC2 /* Alarm-ios-swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Alarm-ios-swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,9 +126,9 @@
 			children = (
 				9EEEC58B1BC641BF00459CF7 /* MainAlarmViewController.swift */,
 				9EED78991AA36C7900961BC2 /* AlarmAddEditViewController.swift */,
-				9E16062B1C62358F009B2407 /* MediaViewController.swift */,
+				9E16062B1C62358F009B2407 /* AlarmSoundEditViewController.swift */,
 				9E9BEE061BCF8FF8000CF364 /* WeekdaysViewController.swift */,
-				9E603F581BD7CA6600303E93 /* LabelEditViewController.swift */,
+				9E603F581BD7CA6600303E93 /* AlarmNameEditViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -349,12 +349,12 @@
 				9EED789A1AA36C7900961BC2 /* AlarmAddEditViewController.swift in Sources */,
 				7773A0F81E43276700811A1D /* Identifier.swift in Sources */,
 				9E1F30731C49128000C66F79 /* AlarmScheduler.swift in Sources */,
-				9E16062C1C62358F009B2407 /* MediaViewController.swift in Sources */,
+				9E16062C1C62358F009B2407 /* AlarmSoundEditViewController.swift in Sources */,
 				9EED78721AA0F03F00961BC2 /* AppDelegate.swift in Sources */,
 				7773A0FA1E4610B700811A1D /* SegueInfo.swift in Sources */,
 				77B08F9F1EA6552100BECF6C /* NotificationName+Extension.swift in Sources */,
 				9EED78941AA1E51700961BC2 /* AlarmModelController.swift in Sources */,
-				9E603F591BD7CA6600303E93 /* LabelEditViewController.swift in Sources */,
+				9E603F591BD7CA6600303E93 /* AlarmNameEditViewController.swift in Sources */,
 				9EEEC58C1BC641BF00459CF7 /* MainAlarmViewController.swift in Sources */,
 				7701B7B31E99414800908B6C /* UIWindow+VisibleViewController.swift in Sources */,
 				9E9BEE071BCF8FF8000CF364 /* WeekdaysViewController.swift in Sources */,
