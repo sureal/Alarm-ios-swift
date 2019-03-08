@@ -9,13 +9,13 @@ import UIKit
 class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
     let alarmScheduler: AlarmScheduler
-    var alarmModel: AlarmModelController
+    var alarmModelController: AlarmModelController
     var alarmPlayer: AlarmPlayer
     var window: UIWindow?
 
     init(alarmScheduler: AlarmScheduler!, alarmModelController: AlarmModelController, alarmPlayer: AlarmPlayer, window: UIWindow?) {
         self.alarmScheduler = alarmScheduler
-        self.alarmModel = alarmModelController
+        self.alarmModelController = alarmModelController
         self.alarmPlayer = alarmPlayer
         self.window = window
         super.init()
@@ -42,7 +42,7 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
                 self.alarmPlayer.stopSound()
 
-                self.alarmScheduler.setNotificationForSnooze(
+                self.alarmScheduler.createNotificationForSnooze(
                         snoozeForMinutes: 9,
                         soundName: userInfo.soundName,
                         index: userInfo.index)
@@ -53,7 +53,10 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
             self.alarmPlayer.stopSound()
 
-            self.alarmModel.alarms[userInfo.index].onSnooze = false
+            if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: userInfo.index) {
+                alarm.onSnooze = false
+            }
+
             //change UI
             var mainVC = self.window?.visibleViewController as? MainAlarmViewController
             if mainVC == nil {
@@ -73,7 +76,7 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
 
-        print("userNotificationCenter:didReceive")
+        print("userNotificationCenter:didReceive: \(response)")
         // to let your app know which action was selected by the user for a given notification:
 
         print("Hey, I received a local notification in background due to user interaction")
@@ -81,20 +84,27 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
         let userInfoDict = response.notification.request.content.userInfo
         let userInfo = UserInfo(userInfo: userInfoDict)
 
-        self.alarmModel.alarms[userInfo.index].onSnooze = false
-        if response.actionIdentifier == Identifier.NotificationAction.snooze {
-            alarmScheduler.setNotificationForSnooze(
-                    snoozeForMinutes: 9,
-                    soundName: userInfo.soundName,
-                    index: userInfo.index)
-            self.alarmModel.alarms[userInfo.index].onSnooze = true
+        if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: userInfo.index) {
+
+            alarm.onSnooze = false
+            if response.actionIdentifier == Identifier.NotificationAction.snooze {
+                alarmScheduler.createNotificationForSnooze(
+                        snoozeForMinutes: 9,
+                        soundName: userInfo.soundName,
+                        index: userInfo.index)
+                alarm.onSnooze = true
+            }
         }
 
         completionHandler()
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
-        print("userNotificationCenter:openSettingsFor")
+        if let notification = notification {
+            print("userNotificationCenter:openSettingsFor: \(notification)")
+        } else {
+            print("userNotificationCenter:openSettingsFor: without notification")
+        }
     }
 
 }

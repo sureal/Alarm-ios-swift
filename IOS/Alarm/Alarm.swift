@@ -5,15 +5,15 @@
 
 import Foundation
 
-struct Alarm: Codable {
+class Alarm: Codable {
 
-    var alarmID: String = ""
+    var indexInTable: Int = -1
+    var alarmID: String = UUID().uuidString
     var alarmName: String = "Alarm"
     var alertDate: Date = Date()
-    var enabled: Bool = false
+    var enabled: Bool = true
     var snoozeEnabled: Bool = false
     var repeatAtWeekdays: [Int] = []
-
     var mediaID: String = ""
     var mediaLabel: String = "bell"
 

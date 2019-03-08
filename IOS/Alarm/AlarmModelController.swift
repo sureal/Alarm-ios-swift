@@ -14,26 +14,43 @@ class AlarmModelController {
 
     let userDefaults: UserDefaults = UserDefaults.standard
 
-    var alarms: [Alarm] = [] {
-        //observer, sync with UserDefaults
-        didSet {
-            storeToUserDefaults()
-        }
-    }
+    private var alarms: [Alarm] = []
 
     var alarmCount: Int {
         return alarms.count
     }
 
     init() {
-        sync()
-    }
-
-    func sync() {
         alarms = loadAlarmsFromUserDefaults()
     }
 
-    func storeToUserDefaults() {
+    func getAlarmAtTableIndex(index: Int) -> Alarm? {
+
+        for alarm in alarms where alarm.indexInTable == index {
+                return alarm
+        }
+        return nil
+    }
+
+    func addAlarm(alarm: Alarm) {
+
+        alarm.indexInTable = alarms.endIndex
+        alarms.append(alarm)
+        persist()
+    }
+
+    func removeAlarm(alarm: Alarm) {
+        self.removeAlarmAtIndex(index: alarm.indexInTable)
+    }
+
+    func removeAlarmAtIndex(index: Int) {
+        if index > 0 && index < self.alarmCount {
+            alarms.remove(at: index)
+        }
+        persist()
+    }
+
+    func persist() {
 
         let encoder = JSONEncoder()
         do {
@@ -51,7 +68,7 @@ class AlarmModelController {
         }
     }
 
-    private func deleteAlarmsFromUserDefaults() {
+    private func deleteAllAlarmsFromUserDefaults() {
         for key in userDefaults.dictionaryRepresentation().keys {
             UserDefaults.standard.removeObject(forKey: key.description)
         }
@@ -67,7 +84,7 @@ class AlarmModelController {
 
         guard let jsonData = json.data(using: .utf8) else {
             print("Cannot create json data from json string")
-            deleteAlarmsFromUserDefaults()
+            deleteAllAlarmsFromUserDefaults()
             return []
         }
         let decoder = JSONDecoder()
@@ -79,7 +96,7 @@ class AlarmModelController {
             print("Cannot decode Alarm Array from jsonData")
         }
 
-        deleteAlarmsFromUserDefaults()
+        deleteAllAlarmsFromUserDefaults()
         return []
     }
 }

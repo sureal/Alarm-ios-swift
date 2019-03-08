@@ -15,15 +15,15 @@ class AlarmNameEditViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        labelTextField.becomeFirstResponder()
+        self.labelTextField.becomeFirstResponder()
         // Do any additional setup after loading the view.
         self.labelTextField.delegate = self
         
-        labelTextField.text = alarmNameToDisplay
+        self.labelTextField.text = self.alarmNameToDisplay
         
         //defined in UITextInputTraits protocol
-        labelTextField.returnKeyType = UIReturnKeyType.done
-        labelTextField.enablesReturnKeyAutomatically = true
+        self.labelTextField.returnKeyType = UIReturnKeyType.done
+        self.labelTextField.enablesReturnKeyAutomatically = true
     }
     
     override func didReceiveMemoryWarning() {

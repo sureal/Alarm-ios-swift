@@ -58,40 +58,45 @@ class MainAlarmViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if isEditing {
-            let sender = SegueInfo(
-                    curCellIndex: indexPath.row,
-                    isEditMode: true, label: alarmModelController.alarms[indexPath.row].alarmName,
-                    mediaLabel: alarmModelController.alarms[indexPath.row].mediaLabel,
-                    mediaID: alarmModelController.alarms[indexPath.row].mediaID,
-                    repeatWeekdays: alarmModelController.alarms[indexPath.row].repeatAtWeekdays,
-                    enabled: alarmModelController.alarms[indexPath.row].enabled,
-                    snoozeEnabled: alarmModelController.alarms[indexPath.row].snoozeEnabled)
 
-            performSegue(withIdentifier: Identifier.Segue.editAlarm, sender: sender)
+            guard let alarmToEdit = self.alarmModelController.getAlarmAtTableIndex(index: indexPath.row) else {
+                print("Alarm to edit is not findable")
+                return
+            }
+
+            let segueInfo = SegueInfo(isEditMode: true, alarmToEdit: alarmToEdit)
+            performSegue(withIdentifier: Identifier.Segue.editAlarm, sender: segueInfo)
         }
+    }
+
+    private func obtainAlarmTableCell(tableView: UITableView) -> UITableViewCell {
+
+        if let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.alarm) {
+            return cell
+        }
+
+        return UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: Identifier.TableCell.alarm)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        var cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.alarm)
-        if cell == nil {
-            cell = UITableViewCell(
-                    style: UITableViewCell.CellStyle.subtitle,
-                    reuseIdentifier: Identifier.TableCell.alarm)
+        let cell = self.obtainAlarmTableCell(tableView: tableView)
+        guard let alarm = self.alarmModelController.getAlarmAtTableIndex(index: indexPath.row) else {
+            return cell
         }
 
         //cell text
-        cell!.selectionStyle = .none
-        cell!.tag = indexPath.row
-        let alarm: Alarm = alarmModelController.alarms[indexPath.row]
+        cell.selectionStyle = .none
+        cell.tag = indexPath.row
+
         let amAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 20.0)]
         let attributedTimeText = NSMutableAttributedString(string: alarm.formattedTime(), attributes: amAttributes)
         let timeAttr: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 45.0)]
 
         let timeRange = NSRange(location: 0, length: attributedTimeText.length - 2)
         attributedTimeText.addAttributes(timeAttr, range: timeRange)
-        cell!.textLabel?.attributedText = attributedTimeText
-        cell!.detailTextLabel?.text = alarm.alarmName
+        cell.textLabel?.attributedText = attributedTimeText
+        cell.detailTextLabel?.text = alarm.alarmName
         //append switch button
         let uiSwitch = UISwitch(frame: CGRect())
         uiSwitch.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
@@ -104,28 +109,35 @@ class MainAlarmViewController: UITableViewController {
                 for: UIControl.Event.valueChanged)
 
         if alarm.enabled {
-            cell!.backgroundColor = UIColor.white
-            cell!.textLabel?.alpha = 1.0
-            cell!.detailTextLabel?.alpha = 1.0
+            cell.backgroundColor = UIColor.white
+            cell.textLabel?.alpha = 1.0
+            cell.detailTextLabel?.alpha = 1.0
             uiSwitch.setOn(true, animated: false)
         } else {
-            cell!.backgroundColor = UIColor.groupTableViewBackground
-            cell!.textLabel?.alpha = 0.5
-            cell!.detailTextLabel?.alpha = 0.5
+            cell.backgroundColor = UIColor.groupTableViewBackground
+            cell.textLabel?.alpha = 0.5
+            cell.detailTextLabel?.alpha = 0.5
         }
-        cell!.accessoryView = uiSwitch
+        cell.accessoryView = uiSwitch
 
-        //delete empty seperator line
+        //delete empty separator line
         tableView.tableFooterView = UIView(frame: CGRect.zero)
-        return cell!
+        return cell
     }
 
     @IBAction func switchTapped(_ sender: UISwitch) {
+
         let index = sender.tag
-        alarmModelController.alarms[index].enabled = sender.isOn
+
+        guard let alarm = self.alarmModelController.getAlarmAtTableIndex(index: index) else {
+            print("No alarm to enable")
+            return
+        }
+
+        alarm.enabled = sender.isOn
+
         if sender.isOn {
             print("switch on")
-            var alarm = alarmModelController.alarms[index]
             alarm.onSnooze = false
             alarmScheduler.createNotification(forAlarm: alarm, alarmIndex: index)
 
@@ -142,8 +154,10 @@ class MainAlarmViewController: UITableViewController {
                             forRowAt indexPath: IndexPath) {
 
         if editingStyle == .delete {
+
             let index = indexPath.row
-            alarmModelController.alarms.remove(at: index)
+            self.alarmModelController.removeAlarmAtIndex(index: index)
+
             let cells = tableView.visibleCells
             for cell in cells {
                 if let uiSwitch = cell.accessoryView as? UISwitch {
@@ -180,15 +194,18 @@ class MainAlarmViewController: UITableViewController {
         alarmAddEditController.alarmModelController = self.alarmModelController
         alarmAddEditController.alarmScheduler = self.alarmScheduler
 
+        // inject SegueInfo
         if segue.identifier == Identifier.Segue.addAlarm {
             alarmAddEditController.navigationItem.title = "Add Alarm"
-            alarmAddEditController.segueInfo = SegueInfo(curCellIndex: alarmModelController.alarmCount,
-                    isEditMode: false, label: "Alarm", mediaLabel: "bell", mediaID: "",
-                    repeatWeekdays: [], enabled: false, snoozeEnabled: false)
+            let alarm = Alarm()
+            alarm.enabled = false
+            alarm.snoozeEnabled = false
+
+            alarmAddEditController.segueInfo = SegueInfo(isEditMode: false, alarmToEdit: alarm)
 
         } else if segue.identifier == Identifier.Segue.editAlarm {
-            alarmAddEditController.navigationItem.title = "Edit Alarm"
 
+            alarmAddEditController.navigationItem.title = "Edit Alarm"
             if let segueInfo = sender as? SegueInfo {
                 alarmAddEditController.segueInfo = segueInfo
             } else {
@@ -202,22 +219,26 @@ class MainAlarmViewController: UITableViewController {
     }
 
     public func changeSwitchButtonState(index: Int) {
-        //let info = notification.userInfo as! [String: AnyObject]
-        //let index: Int = info["index"] as! Int
 
-        if alarmModelController.alarms[index].repeatAtWeekdays.isEmpty {
-            alarmModelController.alarms[index].enabled = false
+        guard let alarm = self.alarmModelController.getAlarmAtTableIndex(index: index) else {
+            return
+        }
+
+        if alarm.repeatAtWeekdays.isEmpty {
+            alarm.enabled = false
         }
         let cells = tableView.visibleCells
         for cell in cells where cell.tag == index {
 
-            if let uiSwitch = cell.accessoryView as? UISwitch {
-                if alarmModelController.alarms[index].repeatAtWeekdays.isEmpty {
-                    uiSwitch.setOn(false, animated: false)
-                    cell.backgroundColor = UIColor.groupTableViewBackground
-                    cell.textLabel?.alpha = 0.5
-                    cell.detailTextLabel?.alpha = 0.5
-                }
+            guard let uiSwitch = cell.accessoryView as? UISwitch else {
+                continue
+            }
+
+            if alarm.repeatAtWeekdays.isEmpty {
+                uiSwitch.setOn(false, animated: false)
+                cell.backgroundColor = UIColor.groupTableViewBackground
+                cell.textLabel?.alpha = 0.5
+                cell.detailTextLabel?.alpha = 0.5
             }
         }
     }

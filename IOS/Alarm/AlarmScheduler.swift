@@ -154,9 +154,6 @@ class AlarmScheduler {
 
             let datesForNotification = self.correctDate(alarm.alertDate, onWeekdaysForNotify: alarm.repeatAtWeekdays)
 
-            // ???
-            self.alarmModelController.sync()
-
             var notificationRequests = [UNNotificationRequest]()
 
             for notificationDate in datesForNotification {
@@ -186,12 +183,12 @@ class AlarmScheduler {
                                            notificationDate: Date,
                                            content: UNMutableNotificationContent) -> UNNotificationRequest {
 
-        // TODO: better understand this part
+
         if alarm.onSnooze {
-            let originalDate = alarmModelController.alarms[alarmIndex].alertDate
-            alarmModelController.alarms[alarmIndex].alertDate = originalDate.toSecondsRoundedDate()
+            let originalDate = alarm.alertDate
+            alarm.alertDate = originalDate.toSecondsRoundedDate()
         } else {
-            alarmModelController.alarms[alarmIndex].alertDate = notificationDate
+            alarm.alertDate = notificationDate
         }
 
         let isRepeating = !alarm.repeatAtWeekdays.isEmpty
@@ -243,12 +240,12 @@ class AlarmScheduler {
         return content
     }
 
-    func setNotificationForSnooze(snoozeForMinutes: Int, soundName: String, index: Int) {
+    func createNotificationForSnooze(snoozeForMinutes: Int, soundName: String, index: Int) {
 
         let now = Date()
         let snoozeTime = now.toSomeMinutesLaterDate(minutesToAdd: snoozeForMinutes)
 
-        var snoozeAlarm = Alarm()
+        let snoozeAlarm = Alarm()
         snoozeAlarm.alertDate = snoozeTime
         snoozeAlarm.repeatAtWeekdays = [Int]()
         snoozeAlarm.snoozeEnabled = true
@@ -262,15 +259,14 @@ class AlarmScheduler {
         //cancel all and register all is often more convenient
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
-        self.alarmModelController.sync()
-
         for alarmIndex in 0..<alarmModelController.alarmCount {
-            var alarm = alarmModelController.alarms[alarmIndex]
-            if alarm.enabled {
-                // TODO: check what is intended here
-                alarm.onSnooze = false
+            if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: alarmIndex) {
 
-                createNotification(forAlarm: alarm, alarmIndex: alarmIndex)
+                if alarm.enabled {
+
+                    alarm.onSnooze = false
+                    createNotification(forAlarm: alarm, alarmIndex: alarmIndex)
+                }
             }
         }
     }
@@ -278,33 +274,37 @@ class AlarmScheduler {
     // workaround for some situation that alarm model is not setting properly (when app on background or not launched)
     func checkNotification() {
 
-        self.alarmModelController.sync()
-
         UNUserNotificationCenter.current().getPendingNotificationRequests { (pendingNotifications) in
 
             if pendingNotifications.isEmpty {
                 for alarmIndex in 0..<self.alarmModelController.alarmCount {
-                    self.alarmModelController.alarms[alarmIndex].enabled = false
+                    if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: alarmIndex) {
+                        alarm.enabled = false
+                    }
                 }
             } else {
-                for (alarmIndex, alarm) in self.alarmModelController.alarms.enumerated() {
-                    var isOutDated = true
-                    if alarm.onSnooze {
-                        isOutDated = false
-                    }
-                    for notification in pendingNotifications {
-                        if let trigger = notification.trigger as? UNCalendarNotificationTrigger {
+                for alarmIndex in 0..<self.alarmModelController.alarmCount {
 
-                            if let nextFireDate = trigger.nextTriggerDate() {
-                                if alarm.alertDate >= nextFireDate {
-                                    isOutDated = false
+                    if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: alarmIndex) {
+
+                        var isOutDated = true
+                        if alarm.onSnooze {
+                            isOutDated = false
+                        }
+                        for notification in pendingNotifications {
+                            if let trigger = notification.trigger as? UNCalendarNotificationTrigger {
+
+                                if let nextFireDate = trigger.nextTriggerDate() {
+                                    if alarm.alertDate >= nextFireDate {
+                                        isOutDated = false
+                                    }
                                 }
                             }
-                        }
 
-                    }
-                    if isOutDated {
-                        self.alarmModelController.alarms[alarmIndex].enabled = false
+                        }
+                        if isOutDated {
+                            alarm.enabled = false
+                        }
                     }
                 }
             }
