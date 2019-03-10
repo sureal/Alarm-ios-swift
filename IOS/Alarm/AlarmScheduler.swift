@@ -10,11 +10,20 @@ import Foundation
 import UIKit
 import UserNotifications
 
+
+protocol TimerElapsedDelegate {
+    func onAlarmTimeElapsed(forAlarm alarm: Alarm)
+}
+
 class AlarmScheduler {
 
     weak var alarmModelController: AlarmModelController!
 
     var notificationRequestIds = [String]()
+
+    var backgroundTimers = [Timer]()
+
+    var timerElapsedDelegate: TimerElapsedDelegate?
 
     init() {
 
@@ -45,7 +54,7 @@ class AlarmScheduler {
 
         let noSnoozeNotificationCategory = UNNotificationCategory(
                 identifier: Identifier.NotificationCategory.noSnooze,
-                actions: [stopAction, snoozeAction],
+                actions: [stopAction],
                 intentIdentifiers: [],
                 options: [.customDismissAction])
         //TODO: clarify alarmCategory.minimalActions = notificationActions
@@ -92,7 +101,7 @@ class AlarmScheduler {
 
 
         //no repeat
-        if alarm.repeatAtWeekdays.isEmpty {
+        if !alarm.isRepeating() {
             //scheduling date is earlier than current date
             if alarm.alertDate < now {
                 //plus one day, otherwise the notification will be fired righton
@@ -107,21 +116,21 @@ class AlarmScheduler {
 
             let componentsToExtract: Set<Calendar.Component> = [.weekday, .weekdayOrdinal, .day]
             let dateComponents = calendar.dateComponents(componentsToExtract, from: alarm.alertDate)
-            guard let weekdayOfDate: Int = dateComponents.weekday else {
+            guard let weekdayOfAlertDate: Int = dateComponents.weekday else {
                 return notificationDates
             }
 
             let daysInWeek = 7
             notificationDates.removeAll(keepingCapacity: true)
-            for currentWeekday in alarm.repeatAtWeekdays {
+            for repetitionWeekday in alarm.repeatAtWeekdays {
 
                 var dateOfWeekday: Date
                 //schedule on next week
-                if compare(weekday: currentWeekday, with: weekdayOfDate) == .before {
-                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: currentWeekday + daysInWeek - weekdayOfDate)
+                if compare(weekday: repetitionWeekday, with: weekdayOfAlertDate) == .before {
+                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: repetitionWeekday + daysInWeek - weekdayOfAlertDate)
                 }
                 //schedule on today or next week
-                else if compare(weekday: currentWeekday, with: weekdayOfDate) == .same {
+                else if compare(weekday: repetitionWeekday, with: weekdayOfAlertDate) == .same {
                     //scheduling date is earlier than current date, then schedule on next week
                     if alarm.alertDate.compare(now) == ComparisonResult.orderedAscending {
                         dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: daysInWeek)
@@ -131,7 +140,7 @@ class AlarmScheduler {
                 }
                 //schedule on next days of this week
                 else { //after
-                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: currentWeekday - weekdayOfDate)
+                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: repetitionWeekday - weekdayOfAlertDate)
                 }
 
                 //fix second component to 0
@@ -144,6 +153,10 @@ class AlarmScheduler {
 
     private func addNotification(forAlarm alarm: Alarm) {
 
+        let datesForNotification = self.createNotificationDates(forAlarm: alarm)
+
+        addBackgroundTimer(alarm: alarm)
+
         requestNotificationAuthorization { granted in
 
             if !granted {
@@ -153,7 +166,7 @@ class AlarmScheduler {
 
             let content = self.createNotificationContent(forAlarm: alarm)
 
-            let datesForNotification = self.createNotificationDates(forAlarm: alarm)
+
 
             var notificationRequests = [UNNotificationRequest]()
 
@@ -161,7 +174,7 @@ class AlarmScheduler {
                 
                 let alarmNotificationRequest = self.createNotificationRequest(
                         notificationDate: notificationDate,
-                        isRepeating: !alarm.repeatAtWeekdays.isEmpty,
+                        isRepeating: alarm.isRepeating(),
                         content: content)
 
                 notificationRequests.append(alarmNotificationRequest)
@@ -177,6 +190,35 @@ class AlarmScheduler {
                     }
                 }
             }
+        }
+    }
+
+    private func addBackgroundTimer(alarm: Alarm) {
+
+        if !alarm.isRepeating() {
+            let timeUntilFirstAlarm = alarm.alertDate.timeIntervalSinceReferenceDate - Date().timeIntervalSinceReferenceDate
+
+            let timer = Timer.scheduledTimer(withTimeInterval: timeUntilFirstAlarm, repeats: false) { timer in
+                print("Time elapsed of alarm \(alarm.alarmName)")
+                self.timerElapsedDelegate?.onAlarmTimeElapsed(forAlarm: alarm)
+            }
+            self.backgroundTimers.append(timer)
+        } else {
+
+            let oneWeekInSeconds = 7 * 24 * 60 * 60.0
+            let notificationDates = self.createNotificationDates(forAlarm: alarm)
+            for notificationDate in notificationDates {
+
+                let timer = Timer(fire: notificationDate, interval: oneWeekInSeconds, repeats: true) { timer in
+                    print("Time elapsed of alarm \(alarm.alarmName)")
+                    self.timerElapsedDelegate?.onAlarmTimeElapsed(forAlarm: alarm)
+                }
+                self.backgroundTimers.append(timer)
+            }
+        }
+
+        self.backgroundTimers.forEach { timer in
+            print("Created timer: Fires next:  \(timer.fireDate) in interval of \(timer.timeInterval/60/60) hours")
         }
     }
 
@@ -202,8 +244,6 @@ class AlarmScheduler {
 
     private func createNotificationTrigger(notificationDate: Date, isRepeating: Bool) -> UNNotificationTrigger {
 
-        //let testtrigger = UNTimeIntervalNotificationTrigger(timeInterval: 20, repeats: false)
-        //return testtrigger
         var notificationDateComponents: DateComponents
         if !isRepeating {
             notificationDateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute,.second,], from: notificationDate)
@@ -234,8 +274,7 @@ class AlarmScheduler {
         userInfo.index = alarm.indexInTable
         userInfo.soundName = alarm.mediaLabel
         userInfo.isSnoozeEnabled = alarm.snoozeEnabled
-        let repeating: Bool = !alarm.repeatAtWeekdays.isEmpty
-        userInfo.repeating = repeating
+        userInfo.repeating = alarm.isRepeating()
 
         // add user info to content
         content.userInfo = userInfo.userInfoDictionary
@@ -252,7 +291,6 @@ class AlarmScheduler {
         snoozeAlarm.alertDate = snoozeTime
         snoozeAlarm.repeatAtWeekdays = [Int]()
         snoozeAlarm.snoozeEnabled = true
-        snoozeAlarm.onSnooze = true
         snoozeAlarm.mediaLabel = soundName
 
         addNotification(forAlarm: snoozeAlarm)
@@ -260,27 +298,41 @@ class AlarmScheduler {
 
     func recreateNotificationsFromDataModel() {
 
-        printNotificationSettings()
+        //printNotificationSettings()
 
-        printPendingNotificationRequests(context: "Before")
-
-        //cancel all and register all is often more convenient
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: self.notificationRequestIds)
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: self.notificationRequestIds)
-        self.notificationRequestIds.removeAll()
+        removeExistingNotifications()
 
         for alarmIndex in 0..<self.alarmModelController.alarmCount {
             if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: alarmIndex) {
 
                 if alarm.enabled {
-
-                    alarm.onSnooze = false
                     self.addNotification(forAlarm: alarm)
                 }
             }
         }
 
-        printPendingNotificationRequests(context: "After")
+        printPendingNotificationRequests(context: "After adding ")
+    }
+
+    private func removeExistingNotifications() {
+
+        printPendingNotificationRequests(context: "Before removal")
+
+        //cancel all and register all is often more convenient
+        //UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: self.notificationRequestIds)
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        //UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: self.notificationRequestIds)
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+
+        self.notificationRequestIds.removeAll()
+
+        // remove all timers
+        self.backgroundTimers.forEach { timer in
+            timer.invalidate()
+        }
+        self.backgroundTimers.removeAll()
+
+        printPendingNotificationRequests(context: "After removal")
     }
 
     private func printPendingNotificationRequests(context: String) {
@@ -319,9 +371,7 @@ class AlarmScheduler {
                     if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: alarmIndex) {
 
                         var isOutDated = true
-                        if alarm.onSnooze {
-                            isOutDated = false
-                        }
+
                         for notification in pendingNotifications {
                             if let trigger = notification.trigger as? UNCalendarNotificationTrigger {
 
@@ -349,7 +399,7 @@ class AlarmScheduler {
     }
 
     private func compare(weekday: Int, with otherWeekday: Int) -> WeekdayComparisonResult {
-        if weekday != 1 && otherWeekday == 1 {
+        if weekday < otherWeekday /*weekday != 1 && otherWeekday == 1*/ {
             return .before
         } else if weekday == otherWeekday {
             return .same

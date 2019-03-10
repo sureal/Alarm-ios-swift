@@ -26,6 +26,7 @@ class AlarmModelController: AlarmObserver {
     init() {
         self.alarmScheduler = AlarmScheduler()
         self.notificationReceiver = NotificationReceiver()
+        self.alarmScheduler.timerElapsedDelegate = self.notificationReceiver
 
         self.alarms = loadAlarmsFromUserDefaults()
         self.alarmScheduler.alarmModelController = self

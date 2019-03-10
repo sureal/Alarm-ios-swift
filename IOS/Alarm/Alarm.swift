@@ -58,7 +58,6 @@ class Alarm: Codable {
         }
     }
 
-    var onSnooze: Bool = false
     var observer: AlarmObserver?
 
     init() {
@@ -78,5 +77,9 @@ class Alarm: Codable {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
         return dateFormatter.string(from: self.alertDate)
+    }
+
+    func isRepeating() -> Bool {
+        return !self.repeatAtWeekdays.isEmpty
     }
 }

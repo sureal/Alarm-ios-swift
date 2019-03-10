@@ -49,7 +49,6 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
 
         self.alarmToEdit.alertDate = datePicker.date.toMinutesRoundedDate()
         self.alarmToEdit.enabled = true
-        self.alarmToEdit.onSnooze = false
 
         if !self.segueInfo.isEditMode {
             self.alarmModelController.addAlarm(alarm: self.alarmToEdit)

@@ -6,7 +6,8 @@ import Foundation
 import UserNotifications
 import UIKit
 
-class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
+
+class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate, TimerElapsedDelegate {
 
     weak var alarmModelController: AlarmModelController!
     var alarmPlayer: AlarmPlayer
@@ -22,6 +23,11 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
         super.init()
 
         UNUserNotificationCenter.current().delegate = self
+    }
+
+    func onAlarmTimeElapsed(forAlarm alarm: Alarm) {
+
+        print("onAlarmTimeElapsed:forAlarm: \(alarm)")
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -73,7 +79,7 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
         window?.visibleViewController?.navigationController?.present(storageController, animated: true, completion: nil)
 
  */
- 
+
         completionHandler([.alert, .sound])
     }
 
@@ -83,20 +89,16 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
         print("userNotificationCenter:didReceive")
         print("Received a local notification while in background due to user interaction: \(response)")
-        
+
         // to let your app know which action was selected by the user for a given notification:
         let userInfoDict = response.notification.request.content.userInfo
         let userInfo = UserInfo(userInfo: userInfoDict)
 
-        if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: userInfo.index) {
+        if response.actionIdentifier == Identifier.NotificationAction.snooze {
+            self.alarmModelController.alarmScheduler.scheduleSnoozeNotification(
+                    snoozeForMinutes: 1,
+                    soundName: userInfo.soundName)
 
-            alarm.onSnooze = false
-            if response.actionIdentifier == Identifier.NotificationAction.snooze {
-                self.alarmModelController.alarmScheduler.scheduleSnoozeNotification(
-                        snoozeForMinutes: 9,
-                        soundName: userInfo.soundName)
-                alarm.onSnooze = true
-            }
         }
 
         completionHandler()

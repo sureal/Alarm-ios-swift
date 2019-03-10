@@ -15,7 +15,7 @@ class MainAlarmViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //alarmScheduler.disableAlarmsIfOutdated()
+        //self.alarmModelController.alarmScheduler.disableAlarmsIfOutdated()
         tableView.allowsSelectionDuringEditing = true
     }
 
@@ -125,7 +125,7 @@ class MainAlarmViewController: UITableViewController {
         let index = sender.tag
 
         guard let alarm = self.alarmModelController.getAlarmAtTableIndex(index: index) else {
-            print("No alarm to enable")
+            print("No alarm to toggle")
             return
         }
 
@@ -133,12 +133,11 @@ class MainAlarmViewController: UITableViewController {
 
         if sender.isOn {
             print("switch on")
-            alarm.onSnooze = false
-            tableView.reloadData()
         } else {
             print("switch off")
-            tableView.reloadData()
         }
+
+        tableView.reloadData()
 
         self.alarmModelController.alarmScheduler.recreateNotificationsFromDataModel()
     }
