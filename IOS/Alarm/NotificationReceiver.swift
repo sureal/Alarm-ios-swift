@@ -8,26 +8,29 @@ import UIKit
 
 class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
-    let alarmScheduler: AlarmScheduler
-    var alarmModelController: AlarmModelController
+    weak var alarmModelController: AlarmModelController!
     var alarmPlayer: AlarmPlayer
     var window: UIWindow?
 
-    init(alarmScheduler: AlarmScheduler!, alarmModelController: AlarmModelController, alarmPlayer: AlarmPlayer, window: UIWindow?) {
-        self.alarmScheduler = alarmScheduler
-        self.alarmModelController = alarmModelController
-        self.alarmPlayer = alarmPlayer
-        self.window = window
+    override init() {
+
+        self.alarmPlayer = AlarmPlayer()
+        if UIApplication.shared.windows.count > 0 {
+            self.window = UIApplication.shared.windows[0]
+        }
+
         super.init()
 
         UNUserNotificationCenter.current().delegate = self
     }
 
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler:
                                         @escaping (UNNotificationPresentationOptions) -> Void) {
 
         print("userNotificationCenter:willPresent:withCompletionHandler(UNNotificationPresentationOptions)")
+        print("Received Notification in foreground: \(notification)")
         // for notifications that are delivered to a foreground app:
 
         //show an alert window
@@ -35,17 +38,17 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
         let userInfoDict = notification.request.content.userInfo
         let userInfo = UserInfo(userInfo: userInfoDict)
 
-        alarmPlayer.playSound(userInfo.soundName)
+        /*
+        self.alarmPlayer.playSound(userInfo.soundName)
         //schedule notification for snooze
         if userInfo.isSnoozeEnabled {
             let snoozeOption = UIAlertAction(title: "Snooze", style: .default) { (_) -> Void in
 
                 self.alarmPlayer.stopSound()
 
-                self.alarmScheduler.createNotificationForSnooze(
+                self.alarmModelController.alarmScheduler.scheduleSnoozeNotification(
                         snoozeForMinutes: 9,
-                        soundName: userInfo.soundName,
-                        index: userInfo.index)
+                        soundName: userInfo.soundName)
             }
             storageController.addAction(snoozeOption)
         }
@@ -69,18 +72,19 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
         storageController.addAction(stopOption)
         window?.visibleViewController?.navigationController?.present(storageController, animated: true, completion: nil)
 
-        completionHandler(UNNotificationPresentationOptions.sound)
+ */
+ 
+        completionHandler([.alert, .sound])
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
 
-        print("userNotificationCenter:didReceive: \(response)")
+        print("userNotificationCenter:didReceive")
+        print("Received a local notification while in background due to user interaction: \(response)")
+        
         // to let your app know which action was selected by the user for a given notification:
-
-        print("Hey, I received a local notification in background due to user interaction")
-
         let userInfoDict = response.notification.request.content.userInfo
         let userInfo = UserInfo(userInfo: userInfoDict)
 
@@ -88,10 +92,9 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate {
 
             alarm.onSnooze = false
             if response.actionIdentifier == Identifier.NotificationAction.snooze {
-                alarmScheduler.createNotificationForSnooze(
+                self.alarmModelController.alarmScheduler.scheduleSnoozeNotification(
                         snoozeForMinutes: 9,
-                        soundName: userInfo.soundName,
-                        index: userInfo.index)
+                        soundName: userInfo.soundName)
                 alarm.onSnooze = true
             }
         }

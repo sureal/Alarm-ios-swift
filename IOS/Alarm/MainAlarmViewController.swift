@@ -10,12 +10,12 @@ import UIKit
 
 class MainAlarmViewController: UITableViewController {
 
-    var alarmScheduler: AlarmScheduler!
     var alarmModelController: AlarmModelController!
+    var alarmToEdit: Alarm?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        alarmScheduler.checkNotification()
+        //alarmScheduler.disableAlarmsIfOutdated()
         tableView.allowsSelectionDuringEditing = true
     }
 
@@ -59,13 +59,8 @@ class MainAlarmViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if isEditing {
 
-            guard let alarmToEdit = self.alarmModelController.getAlarmAtTableIndex(index: indexPath.row) else {
-                print("Alarm to edit is not findable")
-                return
-            }
-
-            let segueInfo = SegueInfo(isEditMode: true, alarmToEdit: alarmToEdit)
-            performSegue(withIdentifier: Identifier.Segue.editAlarm, sender: segueInfo)
+            self.alarmToEdit = self.alarmModelController.getAlarmAtTableIndex(index: indexPath.row)
+            performSegue(withIdentifier: Identifier.Segue.editAlarm, sender: nil)
         }
     }
 
@@ -139,14 +134,13 @@ class MainAlarmViewController: UITableViewController {
         if sender.isOn {
             print("switch on")
             alarm.onSnooze = false
-            alarmScheduler.createNotification(forAlarm: alarm, alarmIndex: index)
-
             tableView.reloadData()
         } else {
             print("switch off")
-            alarmScheduler.recreateNotificationsFromDataModel()
             tableView.reloadData()
         }
+
+        self.alarmModelController.alarmScheduler.recreateNotificationsFromDataModel()
     }
 
     // Override to support editing the table view.
@@ -173,7 +167,6 @@ class MainAlarmViewController: UITableViewController {
 
             // Delete the row from the data source
             tableView.deleteRows(at: [indexPath], with: .fade)
-            alarmScheduler.recreateNotificationsFromDataModel()
         }
     }
 
@@ -192,25 +185,20 @@ class MainAlarmViewController: UITableViewController {
 
         // inject dependencies
         alarmAddEditController.alarmModelController = self.alarmModelController
-        alarmAddEditController.alarmScheduler = self.alarmScheduler
 
         // inject SegueInfo
         if segue.identifier == Identifier.Segue.addAlarm {
             alarmAddEditController.navigationItem.title = "Add Alarm"
-            let alarm = Alarm()
-            alarm.enabled = false
-            alarm.snoozeEnabled = false
-
-            alarmAddEditController.segueInfo = SegueInfo(isEditMode: false, alarmToEdit: alarm)
+            let newAlarm = Alarm()
+            alarmAddEditController.segueInfo = SegueInfo(isEditMode: false, alarmToEdit: newAlarm)
 
         } else if segue.identifier == Identifier.Segue.editAlarm {
 
             alarmAddEditController.navigationItem.title = "Edit Alarm"
-            if let segueInfo = sender as? SegueInfo {
-                alarmAddEditController.segueInfo = segueInfo
-            } else {
-                print("SHIT!")
+            guard let alarmToEdit = self.alarmToEdit else {
+                return
             }
+            alarmAddEditController.segueInfo = SegueInfo(isEditMode: true, alarmToEdit: alarmToEdit)
         }
     }
 

@@ -16,16 +16,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    var alarmScheduler: AlarmScheduler!
-    var notificationReceiver: NotificationReceiver!
+    var alarmModelController: AlarmModelController!
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-
         // Create Dependencies
-        let alarmModelController = AlarmModelController()
-        self.alarmScheduler = AlarmScheduler(alarmModelController: alarmModelController)
+        self.alarmModelController = AlarmModelController()
 
         guard let rootNavController = window?.rootViewController as? UINavigationController else {
             return false
@@ -35,14 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return false
         }
         mainAlarmViewController.alarmModelController = alarmModelController
-        mainAlarmViewController.alarmScheduler = alarmScheduler
-
-        let alarmPlayer = AlarmPlayer()
-        self.notificationReceiver = NotificationReceiver(
-                alarmScheduler: alarmScheduler,
-                alarmModelController: alarmModelController,
-                alarmPlayer: alarmPlayer,
-                window: window)
 
         window?.tintColor = UIColor.red
 
@@ -76,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the
         // application was previously in the background, optionally refresh the user interface.
 //        audioPlayer?.play()
-        alarmScheduler.checkNotification()
+        //alarmScheduler.disableAlarmsIfOutdated()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

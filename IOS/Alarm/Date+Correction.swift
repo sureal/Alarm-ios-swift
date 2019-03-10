@@ -7,7 +7,7 @@ import Foundation
 
 extension Date {
 
-    public func toSecondsRoundedDate(calendar: Calendar = Calendar(identifier: Calendar.Identifier.gregorian)) -> Date {
+    public func toMinutesRoundedDate(calendar: Calendar = Calendar(identifier: Calendar.Identifier.gregorian)) -> Date {
 
         let secondComponent = calendar.component(.second, from: self)
 

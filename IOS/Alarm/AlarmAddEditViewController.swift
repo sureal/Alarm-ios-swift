@@ -15,7 +15,6 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var tableView: UITableView!
 
-    var alarmScheduler: AlarmScheduler!
     var alarmModelController: AlarmModelController!
 
     var segueInfo: SegueInfo!
@@ -48,16 +47,15 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
 
     @IBAction func saveAlarm(_ sender: UIBarButtonItem) {
 
-        self.alarmToEdit.alertDate = datePicker.date.toSecondsRoundedDate()
+        self.alarmToEdit.alertDate = datePicker.date.toMinutesRoundedDate()
         self.alarmToEdit.enabled = true
         self.alarmToEdit.onSnooze = false
 
         if !self.segueInfo.isEditMode {
             self.alarmModelController.addAlarm(alarm: self.alarmToEdit)
         } else {
-            self.alarmModelController.persist()
+            self.alarmModelController.alarmScheduler.recreateNotificationsFromDataModel()
         }
-        
         self.performSegue(withIdentifier: Identifier.UnwindSegue.saveAddEditAlarm, sender: self)
     }
 
@@ -176,9 +174,14 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
+        if let identifier = segue.identifier {
+
+            print("Segue ID: \(identifier)")
+        }
+
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        if segue.identifier == Identifier.Segue.saveAddEditAlarm {
+        if segue.identifier == Identifier.UnwindSegue.saveAddEditAlarm {
 
             if let destinationViewController = segue.destination as? MainAlarmViewController {
 
@@ -190,7 +193,6 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
                         }
                     }
                 }
-                alarmScheduler.recreateNotificationsFromDataModel()
             }
 
         } else if segue.identifier == Identifier.Segue.setAlarmSound {

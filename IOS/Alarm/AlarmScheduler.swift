@@ -12,15 +12,18 @@ import UserNotifications
 
 class AlarmScheduler {
 
-    var alarmModelController: AlarmModelController!
+    weak var alarmModelController: AlarmModelController!
 
-    init(alarmModelController: AlarmModelController) {
-        self.alarmModelController = alarmModelController
+    var notificationRequestIds = [String]()
 
-        self.setupNotificationCategories()
+    init() {
+
+        self.requestNotificationAuthorization { granted in
+            self.setupNotificationCategories()
+        }
     }
 
-    func setupNotificationCategories() {
+    private func setupNotificationCategories() {
 
         // Specify the notification actions.
         let stopAction = UNNotificationAction(
@@ -50,16 +53,16 @@ class AlarmScheduler {
         UNUserNotificationCenter.current().getNotificationCategories { existingCategories in
 
             for existingCategory in existingCategories {
-                print("Category found: \(existingCategory)")
+                print("Existing Notification Category: \(existingCategory)")
             }
-
             // let the notification center know about the not. categories
             let notificationCategories: Set = [snoozeNotificationCategory, noSnoozeNotificationCategory]
             UNUserNotificationCenter.current().setNotificationCategories(notificationCategories)
         }
     }
 
-    func requestNotificationAuthorization(authorisationGranted: @escaping (Bool) -> Void) {
+    private func requestNotificationAuthorization(authorisationGranted: @escaping (Bool) -> Void) {
+
         let options: UNAuthorizationOptions = [.alert, .sound]
         UNUserNotificationCenter.current().requestAuthorization(options: options) { (granted, error) in
             if !granted {
@@ -75,67 +78,71 @@ class AlarmScheduler {
                 authorisationGranted(false)
 
             } else {
+                print("Notification authorization granted by user")
                 authorisationGranted(true)
             }
         }
     }
 
-    private func correctDate(_ date: Date, onWeekdaysForNotify weekdays: [Int]) -> [Date] {
+    private func createNotificationDates(forAlarm alarm: Alarm) -> [Date] {
 
-        var correctedDates: [Date] = [Date]()
+        var notificationDates: [Date] = [Date]()
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
         let now = Date()
-        let componentsToExtract: Set<Calendar.Component> = [.weekday, .weekdayOrdinal, .day]
-        let dateComponents = calendar.dateComponents(componentsToExtract, from: date)
-        guard let weekdayOfDate: Int = dateComponents.weekday else {
-            return correctedDates
-        }
+
 
         //no repeat
-        if weekdays.isEmpty {
+        if alarm.repeatAtWeekdays.isEmpty {
             //scheduling date is earlier than current date
-            if date < now {
+            if alarm.alertDate < now {
                 //plus one day, otherwise the notification will be fired righton
-                correctedDates.append(date.toSomeDaysLaterDate(daysToAdd: 1))
+                notificationDates.append(alarm.alertDate.toSomeDaysLaterDate(daysToAdd: 1))
             } else { //later
-                correctedDates.append(date)
+                notificationDates.append(alarm.alertDate)
             }
-            return correctedDates
+            return notificationDates
         }
         //repeat
         else {
+
+            let componentsToExtract: Set<Calendar.Component> = [.weekday, .weekdayOrdinal, .day]
+            let dateComponents = calendar.dateComponents(componentsToExtract, from: alarm.alertDate)
+            guard let weekdayOfDate: Int = dateComponents.weekday else {
+                return notificationDates
+            }
+
             let daysInWeek = 7
-            correctedDates.removeAll(keepingCapacity: true)
-            for currentWeekday in weekdays {
+            notificationDates.removeAll(keepingCapacity: true)
+            for currentWeekday in alarm.repeatAtWeekdays {
 
                 var dateOfWeekday: Date
                 //schedule on next week
                 if compare(weekday: currentWeekday, with: weekdayOfDate) == .before {
-                    dateOfWeekday = date.toSomeDaysLaterDate(daysToAdd: currentWeekday + daysInWeek - weekdayOfDate)
+                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: currentWeekday + daysInWeek - weekdayOfDate)
                 }
                 //schedule on today or next week
                 else if compare(weekday: currentWeekday, with: weekdayOfDate) == .same {
                     //scheduling date is earlier than current date, then schedule on next week
-                    if date.compare(now) == ComparisonResult.orderedAscending {
-                        dateOfWeekday = date.toSomeDaysLaterDate(daysToAdd: daysInWeek)
+                    if alarm.alertDate.compare(now) == ComparisonResult.orderedAscending {
+                        dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: daysInWeek)
                     } else { //later
-                        dateOfWeekday = date
+                        dateOfWeekday = alarm.alertDate
                     }
                 }
                 //schedule on next days of this week
                 else { //after
-                    dateOfWeekday = date.toSomeDaysLaterDate(daysToAdd: currentWeekday - weekdayOfDate)
+                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: currentWeekday - weekdayOfDate)
                 }
 
                 //fix second component to 0
-                dateOfWeekday = dateOfWeekday.toSecondsRoundedDate()
-                correctedDates.append(dateOfWeekday)
+                dateOfWeekday = dateOfWeekday.toMinutesRoundedDate()
+                notificationDates.append(dateOfWeekday)
             }
-            return correctedDates
+            return notificationDates
         }
     }
 
-    func createNotification(forAlarm alarm: Alarm, alarmIndex: Int) {
+    private func addNotification(forAlarm alarm: Alarm) {
 
         requestNotificationAuthorization { granted in
 
@@ -144,24 +151,17 @@ class AlarmScheduler {
                 return
             }
 
-            let content = self.createNotificationContent(alarm: alarm, alarmIndex: alarmIndex)
+            let content = self.createNotificationContent(forAlarm: alarm)
 
-            //repeat weekly if repeat weekdays are selected
-            //no repeat with snooze notification
-            //if !weekdays.isEmpty && !onSnooze{
-            //  AlarmNotification.repeatInterval = NSCalendar.Unit.weekOfYear
-            //}
-
-            let datesForNotification = self.correctDate(alarm.alertDate, onWeekdaysForNotify: alarm.repeatAtWeekdays)
+            let datesForNotification = self.createNotificationDates(forAlarm: alarm)
 
             var notificationRequests = [UNNotificationRequest]()
 
             for notificationDate in datesForNotification {
                 
                 let alarmNotificationRequest = self.createNotificationRequest(
-                        alarm: alarm,
-                        alarmIndex: alarmIndex,
                         notificationDate: notificationDate,
+                        isRepeating: !alarm.repeatAtWeekdays.isEmpty,
                         content: content)
 
                 notificationRequests.append(alarmNotificationRequest)
@@ -172,41 +172,44 @@ class AlarmScheduler {
 
                     if let error = error {
                         print("Unable to Add Notification Request: \(error)")
+                    } else {
+                        print("Created Notification Request: \(notificationRequest)")
                     }
                 }
             }
         }
     }
 
-    private func createNotificationRequest(alarm: Alarm,
-                                           alarmIndex: Int,
-                                           notificationDate: Date,
+    private func createNotificationRequest(notificationDate: Date,
+                                           isRepeating: Bool,
                                            content: UNMutableNotificationContent) -> UNNotificationRequest {
 
 
-        if alarm.onSnooze {
-            let originalDate = alarm.alertDate
-            alarm.alertDate = originalDate.toSecondsRoundedDate()
-        } else {
-            alarm.alertDate = notificationDate
-        }
-
-        let isRepeating = !alarm.repeatAtWeekdays.isEmpty
         let notificationDateTrigger = createNotificationTrigger(
-            notificationDate: notificationDate,
-            isRepeating: isRepeating)
+                notificationDate: notificationDate.toMinutesRoundedDate(),
+                isRepeating: isRepeating)
 
+        // Make them unique
+        let identifier = "AlarmNotificationRequest_\(UUID().uuidString)"
+        self.notificationRequestIds.append(identifier)
         let alarmNotificationRequest = UNNotificationRequest(
-                identifier: "NotificationRequest_\(notificationDate.timeIntervalSince1970)",
+                identifier: identifier,
                 content: content,
                 trigger: notificationDateTrigger)
 
         return alarmNotificationRequest
     }
 
-    private func createNotificationTrigger(notificationDate: Date, isRepeating: Bool) -> UNCalendarNotificationTrigger {
+    private func createNotificationTrigger(notificationDate: Date, isRepeating: Bool) -> UNNotificationTrigger {
 
-        let notificationDateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: notificationDate)
+        //let testtrigger = UNTimeIntervalNotificationTrigger(timeInterval: 20, repeats: false)
+        //return testtrigger
+        var notificationDateComponents: DateComponents
+        if !isRepeating {
+            notificationDateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute,.second,], from: notificationDate)
+        } else {
+            notificationDateComponents = Calendar.current.dateComponents([.weekday, .hour, .minute, .second], from: notificationDate)
+        }
 
         let notificationDateTrigger = UNCalendarNotificationTrigger(
                 dateMatching: notificationDateComponents,
@@ -214,10 +217,10 @@ class AlarmScheduler {
         return notificationDateTrigger
     }
 
-    private func createNotificationContent(alarm: Alarm, alarmIndex: Int) -> UNMutableNotificationContent {
+    private func createNotificationContent(forAlarm alarm: Alarm) -> UNMutableNotificationContent {
 
         let content = UNMutableNotificationContent()
-        content.title = "A TITLE TODO Replace"
+        content.title = "Alarm: \(alarm.alarmName)"
         content.body = "Wake Up!"
         // TODO: think about criticalSound
         content.sound = UNNotificationSound(named: UNNotificationSoundName(alarm.mediaLabel + ".mp3"))
@@ -228,7 +231,7 @@ class AlarmScheduler {
         }
 
         let userInfo = UserInfo()
-        userInfo.index = alarmIndex
+        userInfo.index = alarm.indexInTable
         userInfo.soundName = alarm.mediaLabel
         userInfo.isSnoozeEnabled = alarm.snoozeEnabled
         let repeating: Bool = !alarm.repeatAtWeekdays.isEmpty
@@ -240,10 +243,10 @@ class AlarmScheduler {
         return content
     }
 
-    func createNotificationForSnooze(snoozeForMinutes: Int, soundName: String, index: Int) {
+    func scheduleSnoozeNotification(snoozeForMinutes: Int, soundName: String) {
 
         let now = Date()
-        let snoozeTime = now.toSomeMinutesLaterDate(minutesToAdd: snoozeForMinutes)
+        let snoozeTime = now.toSomeMinutesLaterDate(minutesToAdd: snoozeForMinutes).toMinutesRoundedDate()
 
         let snoozeAlarm = Alarm()
         snoozeAlarm.alertDate = snoozeTime
@@ -252,37 +255,65 @@ class AlarmScheduler {
         snoozeAlarm.onSnooze = true
         snoozeAlarm.mediaLabel = soundName
 
-        createNotification(forAlarm: snoozeAlarm, alarmIndex: index)
+        addNotification(forAlarm: snoozeAlarm)
     }
 
     func recreateNotificationsFromDataModel() {
-        //cancel all and register all is often more convenient
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
-        for alarmIndex in 0..<alarmModelController.alarmCount {
+        printNotificationSettings()
+
+        printPendingNotificationRequests(context: "Before")
+
+        //cancel all and register all is often more convenient
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: self.notificationRequestIds)
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: self.notificationRequestIds)
+        self.notificationRequestIds.removeAll()
+
+        for alarmIndex in 0..<self.alarmModelController.alarmCount {
             if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: alarmIndex) {
 
                 if alarm.enabled {
 
                     alarm.onSnooze = false
-                    createNotification(forAlarm: alarm, alarmIndex: alarmIndex)
+                    self.addNotification(forAlarm: alarm)
                 }
             }
+        }
+
+        printPendingNotificationRequests(context: "After")
+    }
+
+    private func printPendingNotificationRequests(context: String) {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { (notificationRequests) in
+
+            let count = notificationRequests.count
+            print("\(context) Existing Pending Notification Requests: \(count)")
+            notificationRequests.forEach({ (request) in
+
+                print("\(context) Pending: Notification Request: \(request)")
+            })
+        }
+    }
+
+    private func printNotificationSettings() {
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            print("Notification Settings: \(settings)")
         }
     }
 
     // workaround for some situation that alarm model is not setting properly (when app on background or not launched)
-    func checkNotification() {
+    func disableAlarmsIfOutdated() {
 
         UNUserNotificationCenter.current().getPendingNotificationRequests { (pendingNotifications) in
 
-            if pendingNotifications.isEmpty {
-                for alarmIndex in 0..<self.alarmModelController.alarmCount {
-                    if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: alarmIndex) {
-                        alarm.enabled = false
-                    }
-                }
+            let count = pendingNotifications.count
+
+            if count == 0 {
+
+                self.alarmModelController.disableAllAlarms()
+
             } else {
+
                 for alarmIndex in 0..<self.alarmModelController.alarmCount {
 
                     if let alarm = self.alarmModelController.getAlarmAtTableIndex(index: alarmIndex) {

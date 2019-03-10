@@ -34,6 +34,7 @@
 		9EED78941AA1E51700961BC2 /* AlarmModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EED78931AA1E51700961BC2 /* AlarmModelController.swift */; };
 		9EED789A1AA36C7900961BC2 /* AlarmAddEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EED78991AA36C7900961BC2 /* AlarmAddEditViewController.swift */; };
 		9EEEC58C1BC641BF00459CF7 /* MainAlarmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EEEC58B1BC641BF00459CF7 /* MainAlarmViewController.swift */; };
+		C29F37DB223527410019E0D1 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C29F37DA223527410019E0D1 /* UserNotifications.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		9EED78931AA1E51700961BC2 /* AlarmModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmModelController.swift; sourceTree = "<group>"; };
 		9EED78991AA36C7900961BC2 /* AlarmAddEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmAddEditViewController.swift; sourceTree = "<group>"; };
 		9EEEC58B1BC641BF00459CF7 /* MainAlarmViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainAlarmViewController.swift; sourceTree = "<group>"; };
+		C29F37DA223527410019E0D1 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C29F37DB223527410019E0D1 /* UserNotifications.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +163,7 @@
 				9EED786E1AA0F03F00961BC2 /* Alarm */,
 				9EED78841AA0F03F00961BC2 /* AlarmTests */,
 				9EED786D1AA0F03F00961BC2 /* Products */,
+				C29F37D9223527410019E0D1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -211,6 +215,14 @@
 				9EED78861AA0F03F00961BC2 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C29F37D9223527410019E0D1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C29F37DA223527410019E0D1 /* UserNotifications.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

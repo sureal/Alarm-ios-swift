@@ -10,18 +10,28 @@
 import Foundation
 import MediaPlayer
 
-class AlarmModelController {
+class AlarmModelController: AlarmObserver {
 
     let userDefaults: UserDefaults = UserDefaults.standard
 
-    private var alarms: [Alarm] = []
+    let alarmScheduler: AlarmScheduler!
+    let notificationReceiver: NotificationReceiver!
+
+    private var alarms: [Alarm]!
 
     var alarmCount: Int {
         return alarms.count
     }
 
     init() {
-        alarms = loadAlarmsFromUserDefaults()
+        self.alarmScheduler = AlarmScheduler()
+        self.notificationReceiver = NotificationReceiver()
+
+        self.alarms = loadAlarmsFromUserDefaults()
+        self.alarmScheduler.alarmModelController = self
+        self.notificationReceiver.alarmModelController = self
+
+        observeAlarms()
     }
 
     func getAlarmAtTableIndex(index: Int) -> Alarm? {
@@ -37,6 +47,10 @@ class AlarmModelController {
         alarm.indexInTable = alarms.endIndex
         alarms.append(alarm)
         persist()
+
+        observeAlarms()
+
+        self.alarmScheduler.recreateNotificationsFromDataModel()
     }
 
     func removeAlarm(alarm: Alarm) {
@@ -44,13 +58,42 @@ class AlarmModelController {
     }
 
     func removeAlarmAtIndex(index: Int) {
-        if index > 0 && index < self.alarmCount {
+        if index >= 0 && index < self.alarmCount {
             alarms.remove(at: index)
         }
+        correctAlarmIndices()
+        persist()
+        self.alarmScheduler.recreateNotificationsFromDataModel()
+    }
+
+    func alarmChanged(alarm: Alarm) {
+        print("Alarm changed")
         persist()
     }
 
-    func persist() {
+    private func correctAlarmIndices() {
+        for alarmIndex in 0..<alarmCount {
+            let alarm = self.alarms[alarmIndex]
+            alarm.indexInTable = alarmIndex
+        }
+    }
+
+    func disableAllAlarms() {
+
+        for alarmIndex in 0..<alarmCount {
+            if let alarm = getAlarmAtTableIndex(index: alarmIndex) {
+                alarm.enabled = false
+            }
+        }
+    }
+
+    private func observeAlarms() {
+        self.alarms.forEach { alarm in
+            alarm.observer = self
+        }
+    }
+
+    private func persist() {
 
         let encoder = JSONEncoder()
         do {
@@ -70,7 +113,7 @@ class AlarmModelController {
 
     private func deleteAllAlarmsFromUserDefaults() {
         for key in userDefaults.dictionaryRepresentation().keys {
-            UserDefaults.standard.removeObject(forKey: key.description)
+            userDefaults.removeObject(forKey: key.description)
         }
     }
 
