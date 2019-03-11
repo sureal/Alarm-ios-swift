@@ -10,6 +10,8 @@
 		5C56802F784C2A84103671A2 /* NotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568708F722806733CA6E35 /* NotificationReceiver.swift */; };
 		5C5680BE3BB3B93E3F719F46 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568DC031A480F1A987DABA /* Alarm.swift */; };
 		5C5681062EAFC8A8460061A1 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56832E388AF3453DCE4DD0 /* UserInfo.swift */; };
+		5C56813BE51521F715D4A785 /* Weekday.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5680D3B265DF3F63EB5AB2 /* Weekday.swift */; };
+		5C56823B8C4864D6D158B30F /* Weekday.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5680D3B265DF3F63EB5AB2 /* Weekday.swift */; };
 		5C56833DA0979C9CB4295FEA /* Date+Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56818CB6E040228EA89456 /* Date+Correction.swift */; };
 		5C5683585608AE8A879AF911 /* Date+Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C56818CB6E040228EA89456 /* Date+Correction.swift */; };
 		5C5687469B791F9CB3BC8F81 /* Alarm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C568DC031A480F1A987DABA /* Alarm.swift */; };
@@ -48,6 +50,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5C5680D3B265DF3F63EB5AB2 /* Weekday.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weekday.swift; sourceTree = "<group>"; };
 		5C56818CB6E040228EA89456 /* Date+Correction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Correction.swift"; sourceTree = "<group>"; };
 		5C56832E388AF3453DCE4DD0 /* UserInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		5C568708F722806733CA6E35 /* NotificationReceiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationReceiver.swift; sourceTree = "<group>"; };
@@ -120,6 +123,7 @@
 				7773A0F91E4610B700811A1D /* SegueInfo.swift */,
 				5C568DC031A480F1A987DABA /* Alarm.swift */,
 				5C56832E388AF3453DCE4DD0 /* UserInfo.swift */,
+				5C5680D3B265DF3F63EB5AB2 /* Weekday.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -375,6 +379,7 @@
 				5C56833DA0979C9CB4295FEA /* Date+Correction.swift in Sources */,
 				5C56802F784C2A84103671A2 /* NotificationReceiver.swift in Sources */,
 				5C5689C8EAE9D417329A9D76 /* AlarmPlayer.swift in Sources */,
+				5C56823B8C4864D6D158B30F /* Weekday.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +392,7 @@
 				5C5683585608AE8A879AF911 /* Date+Correction.swift in Sources */,
 				5C568E6213668398F13D2E4E /* NotificationReceiver.swift in Sources */,
 				5C5688D0AAAF1FDEA228EBC0 /* AlarmPlayer.swift in Sources */,
+				5C56813BE51521F715D4A785 /* Weekday.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,9 +28,10 @@ struct Identifier {
     }
 
     struct TableCell {
-        static let setting = "setting"
-        static let music = "musicIdentifier"
-        static let alarm = "alarmCell"
+        static let setting = "settingCellIdentifier"
+        static let music = "musicCellIdentifier"
+        static let alarm = "alarmCellIdentifier"
+        static let weekday = "weekdayCellIdentifier"
     }
 
     struct NotificationAction {

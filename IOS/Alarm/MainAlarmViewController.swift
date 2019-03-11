@@ -173,11 +173,11 @@ class MainAlarmViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        guard let destinationViewController = segue.destination as? UINavigationController else {
+        guard let navVC = segue.destination as? UINavigationController else {
             print("ERROR: Destination view controller is not a navigation controller")
             return
         }
-        guard let alarmAddEditController = destinationViewController.topViewController as? AlarmAddEditViewController else {
+        guard let alarmAddEditController = navVC.topViewController as? AlarmAddEditViewController else {
             print("ERROR: Destination top view controller is not a AlarmAddEditViewController")
             return
         }
@@ -229,5 +229,4 @@ class MainAlarmViewController: UITableViewController {
             }
         }
     }
-
 }

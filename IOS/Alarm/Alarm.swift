@@ -42,7 +42,7 @@ class Alarm: Codable {
             observer?.alarmChanged(alarm: self)
         }
     }
-    var repeatAtWeekdays: [Int] = [] {
+    var repeatAtWeekdays: [Weekday] = [] {
         didSet {
             observer?.alarmChanged(alarm: self)
         }

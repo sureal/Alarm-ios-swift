@@ -22,7 +22,7 @@ class AlarmSoundEditViewController: UITableViewController, MPMediaPickerControll
 
     override func viewWillDisappear(_ animated: Bool) {
         // TODO: this could be obsolete
-        performSegue(withIdentifier: Identifier.UnwindSegue.saveAlarmSound, sender: self)
+        //performSegue(withIdentifier: Identifier.UnwindSegue.saveAlarmSound, sender: self)
     }
 
     override func didReceiveMemoryWarning() {

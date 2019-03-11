@@ -29,6 +29,8 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         }
         
         self.datePicker.date = self.alarmToEdit.alertDate
+
+        self.tableView.delegate = self
         
         super.viewDidLoad()
     }
@@ -94,7 +96,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
             if indexPath.row == 0 {
 
                 cell.textLabel!.text = "Repeat"
-                cell.detailTextLabel?.text = self.repeatText(weekdays: self.alarmToEdit.repeatAtWeekdays)
+                cell.detailTextLabel?.text = Weekday.repeatText(weekdays: self.alarmToEdit.repeatAtWeekdays)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
 
             } else if indexPath.row == 1 {
@@ -174,7 +176,6 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
         if let identifier = segue.identifier {
-
             print("Segue ID: \(identifier)")
         }
 
@@ -192,28 +193,38 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
                         }
                     }
                 }
+                return
             }
-
-        } else if segue.identifier == Identifier.Segue.setAlarmSound {
+        }
+        
+        if segue.identifier == Identifier.Segue.setAlarmSound {
 
             if let destinationViewController = segue.destination as? AlarmSoundEditViewController {
 
                 destinationViewController.mediaID = self.alarmToEdit.mediaID
                 destinationViewController.mediaLabel = self.alarmToEdit.mediaLabel
+                
+                return
             }
 
-        } else if segue.identifier == Identifier.Segue.editAlarmName {
+        }
+        
+        if segue.identifier == Identifier.Segue.editAlarmName {
 
             if let destinationViewController = segue.destination as? AlarmNameEditViewController {
 
                 destinationViewController.alarmNameToDisplay = self.alarmToEdit.alarmName
+                return
             }
 
-        } else if segue.identifier == Identifier.Segue.setWeekdaysRepeating {
+        }
+        
+        if segue.identifier == Identifier.Segue.setWeekdaysRepeating {
 
             if let destinationViewController = segue.destination as? WeekdaysViewController {
 
                 destinationViewController.weekdays = self.alarmToEdit.repeatAtWeekdays
+                return
             }
         }
     }
@@ -241,43 +252,5 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
             self.alarmToEdit.mediaLabel = sourceViewController.mediaLabel
             self.alarmToEdit.mediaID = sourceViewController.mediaID
         }
-    }
-
-    private func repeatText(weekdays: [Int]) -> String {
-        if weekdays.count == 7 {
-            return "Every day"
-        }
-
-        if weekdays.isEmpty {
-            return "Never"
-        }
-
-        var ret = String()
-        var weekdaysSorted: [Int] = [Int]()
-
-        weekdaysSorted = weekdays.sorted(by: <)
-
-        for day in weekdaysSorted {
-            switch day {
-            case 1:
-                ret += "Sun "
-            case 2:
-                ret += "Mon "
-            case 3:
-                ret += "Tue "
-            case 4:
-                ret += "Wed "
-            case 5:
-                ret += "Thu "
-            case 6:
-                ret += "Fri "
-            case 7:
-                ret += "Sat "
-            default:
-                //throw
-                break
-            }
-        }
-        return ret
     }
 }

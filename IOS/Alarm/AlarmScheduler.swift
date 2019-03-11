@@ -10,8 +10,7 @@ import Foundation
 import UIKit
 import UserNotifications
 
-
-protocol TimerElapsedDelegate {
+protocol TimerElapsedDelegate: class {
     func onAlarmTimeElapsed(forAlarm alarm: Alarm)
 }
 
@@ -23,12 +22,13 @@ class AlarmScheduler {
 
     var backgroundTimers = [Timer]()
 
-    var timerElapsedDelegate: TimerElapsedDelegate?
+    weak var timerElapsedDelegate: TimerElapsedDelegate?
 
     init() {
-
         self.requestNotificationAuthorization { granted in
-            self.setupNotificationCategories()
+            if granted {
+                self.setupNotificationCategories()
+            }
         }
     }
 
@@ -95,10 +95,9 @@ class AlarmScheduler {
 
     private func createNotificationDates(forAlarm alarm: Alarm) -> [Date] {
 
-        var notificationDates: [Date] = [Date]()
+        var notificationDates = [Date]()
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
         let now = Date()
-
 
         //no repeat
         if !alarm.isRepeating() {
@@ -116,31 +115,37 @@ class AlarmScheduler {
 
             let componentsToExtract: Set<Calendar.Component> = [.weekday, .weekdayOrdinal, .day]
             let dateComponents = calendar.dateComponents(componentsToExtract, from: alarm.alertDate)
-            guard let weekdayOfAlertDate: Int = dateComponents.weekday else {
+            guard let dayOfAlertDate: Int = dateComponents.weekday,
+                  let weekdayOfAlertDate = Weekday(rawValue: dayOfAlertDate) else {
                 return notificationDates
             }
 
-            let daysInWeek = 7
+            let daysInWeek = Weekday.all().count
             notificationDates.removeAll(keepingCapacity: true)
             for repetitionWeekday in alarm.repeatAtWeekdays {
 
                 var dateOfWeekday: Date
                 //schedule on next week
-                if compare(weekday: repetitionWeekday, with: weekdayOfAlertDate) == .before {
-                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: repetitionWeekday + daysInWeek - weekdayOfAlertDate)
-                }
-                //schedule on today or next week
-                else if compare(weekday: repetitionWeekday, with: weekdayOfAlertDate) == .same {
+                let comparisonResult = repetitionWeekday.compare(with: weekdayOfAlertDate)
+
+                switch comparisonResult {
+
+                case .before:
+                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: repetitionWeekday.dayInWeek()
+                            + daysInWeek
+                            - weekdayOfAlertDate.dayInWeek())
+
+                case .same:
                     //scheduling date is earlier than current date, then schedule on next week
                     if alarm.alertDate.compare(now) == ComparisonResult.orderedAscending {
                         dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: daysInWeek)
                     } else { //later
                         dateOfWeekday = alarm.alertDate
                     }
-                }
-                //schedule on next days of this week
-                else { //after
-                    dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd: repetitionWeekday - weekdayOfAlertDate)
+
+                case .after:
+                        dateOfWeekday = alarm.alertDate.toSomeDaysLaterDate(daysToAdd:
+                        repetitionWeekday.dayInWeek() - weekdayOfAlertDate.dayInWeek())
                 }
 
                 //fix second component to 0
@@ -165,8 +170,6 @@ class AlarmScheduler {
             }
 
             let content = self.createNotificationContent(forAlarm: alarm)
-
-
 
             var notificationRequests = [UNNotificationRequest]()
 
@@ -196,10 +199,12 @@ class AlarmScheduler {
     private func addBackgroundTimer(alarm: Alarm) {
 
         if !alarm.isRepeating() {
-            let timeUntilFirstAlarm = alarm.alertDate.timeIntervalSinceReferenceDate - Date().timeIntervalSinceReferenceDate
+            let timeUntilFirstAlarm =
+                alarm.alertDate.timeIntervalSinceReferenceDate
+                - Date().timeIntervalSinceReferenceDate
 
             let timer = Timer.scheduledTimer(withTimeInterval: timeUntilFirstAlarm, repeats: false) { timer in
-                print("Time elapsed of alarm \(alarm.alarmName)")
+                print("Timer \(timer) elapsed of alarm \(alarm.alarmName)")
                 self.timerElapsedDelegate?.onAlarmTimeElapsed(forAlarm: alarm)
             }
             self.backgroundTimers.append(timer)
@@ -210,7 +215,7 @@ class AlarmScheduler {
             for notificationDate in notificationDates {
 
                 let timer = Timer(fire: notificationDate, interval: oneWeekInSeconds, repeats: true) { timer in
-                    print("Time elapsed of alarm \(alarm.alarmName)")
+                    print("Timer \(timer) elapsed of alarm \(alarm.alarmName)")
                     self.timerElapsedDelegate?.onAlarmTimeElapsed(forAlarm: alarm)
                 }
                 self.backgroundTimers.append(timer)
@@ -225,7 +230,6 @@ class AlarmScheduler {
     private func createNotificationRequest(notificationDate: Date,
                                            isRepeating: Bool,
                                            content: UNMutableNotificationContent) -> UNNotificationRequest {
-
 
         let notificationDateTrigger = createNotificationTrigger(
                 notificationDate: notificationDate.toMinutesRoundedDate(),
@@ -246,9 +250,11 @@ class AlarmScheduler {
 
         var notificationDateComponents: DateComponents
         if !isRepeating {
-            notificationDateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute,.second,], from: notificationDate)
+            notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second],
+                                                                         from: notificationDate)
         } else {
-            notificationDateComponents = Calendar.current.dateComponents([.weekday, .hour, .minute, .second], from: notificationDate)
+            notificationDateComponents = Calendar.current.dateComponents([.weekday, .hour, .minute, .second],
+                                                                         from: notificationDate)
         }
 
         let notificationDateTrigger = UNCalendarNotificationTrigger(
@@ -289,7 +295,7 @@ class AlarmScheduler {
 
         let snoozeAlarm = Alarm()
         snoozeAlarm.alertDate = snoozeTime
-        snoozeAlarm.repeatAtWeekdays = [Int]()
+        snoozeAlarm.repeatAtWeekdays = [Weekday]()
         snoozeAlarm.snoozeEnabled = true
         snoozeAlarm.mediaLabel = soundName
 
@@ -389,22 +395,6 @@ class AlarmScheduler {
                     }
                 }
             }
-        }
-    }
-
-    private enum WeekdayComparisonResult {
-        case before
-        case same
-        case after
-    }
-
-    private func compare(weekday: Int, with otherWeekday: Int) -> WeekdayComparisonResult {
-        if weekday < otherWeekday /*weekday != 1 && otherWeekday == 1*/ {
-            return .before
-        } else if weekday == otherWeekday {
-            return .same
-        } else {
-            return .after
         }
     }
 }

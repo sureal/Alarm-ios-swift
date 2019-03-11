@@ -6,7 +6,6 @@ import Foundation
 import UserNotifications
 import UIKit
 
-
 class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate, TimerElapsedDelegate {
 
     weak var alarmModelController: AlarmModelController!
@@ -40,11 +39,12 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate, TimerEla
         // for notifications that are delivered to a foreground app:
 
         //show an alert window
+        /*
         let storageController = UIAlertController(title: "Alarm", message: nil, preferredStyle: .alert)
         let userInfoDict = notification.request.content.userInfo
         let userInfo = UserInfo(userInfo: userInfoDict)
 
-        /*
+        
         self.alarmPlayer.playSound(userInfo.soundName)
         //schedule notification for snooze
         if userInfo.isSnoozeEnabled {
