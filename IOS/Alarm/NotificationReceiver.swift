@@ -94,7 +94,7 @@ class NotificationReceiver: NSObject, UNUserNotificationCenterDelegate, TimerEla
         let userInfoDict = response.notification.request.content.userInfo
         let userInfo = UserInfo(userInfo: userInfoDict)
 
-        if response.actionIdentifier == Identifier.NotificationAction.snooze {
+        if response.actionIdentifier == AlarmIdentifier.NotificationAction.snooze {
             self.alarmModelController.alarmScheduler.scheduleSnoozeNotification(
                     snoozeForMinutes: 1,
                     soundName: userInfo.soundName)

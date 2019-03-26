@@ -78,11 +78,11 @@ class AlarmSoundEditViewController: UITableViewController, MPMediaPickerControll
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.music)
+        var cell = tableView.dequeueReusableCell(withIdentifier: AlarmIdentifier.TableCell.music)
 
         if cell == nil {
             cell = UITableViewCell(style: UITableViewCell.CellStyle.default,
-                    reuseIdentifier: Identifier.TableCell.music)
+                    reuseIdentifier: AlarmIdentifier.TableCell.music)
         }
         if indexPath.section == 0 {
             if indexPath.row == 0 {

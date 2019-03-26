@@ -3,6 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="539d2360-dc22-456a-a941-86023ebb4cd2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Alarm-ios-swift.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm-ios-swift.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Alarm/AlarmAddEditViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmAddEditViewController.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Alarm/AlarmModelController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmModelController.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Alarm/AlarmScheduler.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmScheduler.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Alarm/AlarmSoundEditViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmSoundEditViewController.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Alarm/Identifier.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmIdentifier.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Alarm/MainAlarmViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/MainAlarmViewController.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Alarm/NotificationReceiver.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/NotificationReceiver.swift" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -10,7 +18,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="iphonesimulator_B2BCE2B7-7091-4A2E-B974-09529C178D0F" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="iphonesimulator_B94955D8-53E8-42FA-9CEE-2948888F7713" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
@@ -35,7 +43,7 @@
         <entry file="file://$PROJECT_DIR$/Alarm/AlarmAddEditViewController.swift">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1185">
-              <caret line="81" column="89" selection-start-line="81" selection-start-column="89" selection-end-line="81" selection-end-column="89" />
+              <caret line="81" column="94" selection-start-line="81" selection-start-column="94" selection-end-line="81" selection-end-column="94" />
             </state>
           </provider>
         </entry>
@@ -43,17 +51,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Alarm/WeekdaysViewController.swift">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="648">
+            <state relative-caret-position="810">
               <caret line="54" selection-start-line="54" selection-end-line="54" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Alarm/Identifier.swift">
+        <entry file="file://$PROJECT_DIR$/Alarm/AlarmIdentifier.swift">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
-              <caret line="30" column="51" selection-start-line="30" selection-start-column="51" selection-end-line="30" selection-end-column="51" />
+            <state relative-caret-position="108">
+              <caret line="14" column="47" lean-forward="true" selection-start-line="14" selection-start-column="47" selection-end-line="14" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -105,16 +113,16 @@
         <option value="$PROJECT_DIR$/Alarm/Alarm.swift" />
         <option value="$PROJECT_DIR$/Alarm/MainAlarmViewController.swift" />
         <option value="$PROJECT_DIR$/Alarm/AlarmAddEditViewController.swift" />
-        <option value="$PROJECT_DIR$/Alarm/Identifier.swift" />
         <option value="$PROJECT_DIR$/Alarm/Weekday.swift" />
         <option value="$PROJECT_DIR$/Alarm/AlarmScheduler.swift" />
+        <option value="$PROJECT_DIR$/Alarm/Identifier.swift" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
-    <option name="width" value="1440" />
-    <option name="height" value="821" />
+    <option name="width" value="1428" />
+    <option name="height" value="819" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -122,7 +130,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Cidr.FilesView" />
       <pane id="ProjectPane">
         <subPane>
@@ -169,11 +176,13 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="OBJC.PRESERVED_TARGET_SELECTION" value="Alarm-ios-swift,,,Alarm-ios-swiftTests" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -224,6 +233,10 @@
       <workItem from="1552330361555" duration="9665000" />
       <workItem from="1553362986427" duration="13000" />
       <workItem from="1553363042767" duration="1748000" />
+      <workItem from="1553373092298" duration="598000" />
+      <workItem from="1553444665434" duration="582000" />
+      <workItem from="1553457315431" duration="649000" />
+      <workItem from="1553619709838" duration="409000" />
     </task>
     <task id="LOCAL-00001" summary="Fixes hundreds of swiftlint warning and errors. &#10;Refactoring ongoing towards clean code">
       <created>1551224508461</created>
@@ -243,12 +256,12 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="127867000" />
+    <option name="totallyTimeSpent" value="130105000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="821" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="820" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49284253" visible="true" weight="0.21530758" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49284253" visible="true" weight="0.21530758" />
       <window_info id="Structure" order="1" sideWeight="0.50715744" side_tool="true" weight="0.21530758" />
       <window_info id="Designer" order="2" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -260,7 +273,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.2249657" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="8" visible="true" weight="0.2239011" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="11" weight="0.32921812" />
@@ -532,21 +545,21 @@
     <entry file="file://$PROJECT_DIR$/Alarm/AlarmAddEditViewController.swift">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1185">
-          <caret line="81" column="89" selection-start-line="81" selection-start-column="89" selection-end-line="81" selection-end-column="89" />
+          <caret line="81" column="94" selection-start-line="81" selection-start-column="94" selection-end-line="81" selection-end-column="94" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Alarm/WeekdaysViewController.swift">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="648">
+        <state relative-caret-position="810">
           <caret line="54" selection-start-line="54" selection-end-line="54" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Alarm/Identifier.swift">
+    <entry file="file://$PROJECT_DIR$/Alarm/AlarmIdentifier.swift">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="30" column="51" selection-start-line="30" selection-start-column="51" selection-end-line="30" selection-end-column="51" />
+        <state relative-caret-position="108">
+          <caret line="14" column="47" lean-forward="true" selection-start-line="14" selection-start-column="47" selection-end-line="14" selection-end-column="47" />
         </state>
       </provider>
     </entry>

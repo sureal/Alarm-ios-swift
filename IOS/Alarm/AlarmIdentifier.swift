@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Identifier {
+struct AlarmIdentifier {
 
     struct Segue {
         static let addAlarm = "addAlarmSegue"

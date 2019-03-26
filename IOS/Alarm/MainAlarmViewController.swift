@@ -60,17 +60,17 @@ class MainAlarmViewController: UITableViewController {
         if isEditing {
 
             self.alarmToEdit = self.alarmModelController.getAlarmAtTableIndex(index: indexPath.row)
-            performSegue(withIdentifier: Identifier.Segue.editAlarm, sender: nil)
+            performSegue(withIdentifier: AlarmIdentifier.Segue.editAlarm, sender: nil)
         }
     }
 
     private func obtainAlarmTableCell(tableView: UITableView) -> UITableViewCell {
 
-        if let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.alarm) {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: AlarmIdentifier.TableCell.alarm) {
             return cell
         }
 
-        return UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: Identifier.TableCell.alarm)
+        return UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: AlarmIdentifier.TableCell.alarm)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -186,12 +186,12 @@ class MainAlarmViewController: UITableViewController {
         alarmAddEditController.alarmModelController = self.alarmModelController
 
         // inject SegueInfo
-        if segue.identifier == Identifier.Segue.addAlarm {
+        if segue.identifier == AlarmIdentifier.Segue.addAlarm {
             alarmAddEditController.navigationItem.title = "Add Alarm"
             let newAlarm = Alarm()
             alarmAddEditController.segueInfo = SegueInfo(isEditMode: false, alarmToEdit: newAlarm)
 
-        } else if segue.identifier == Identifier.Segue.editAlarm {
+        } else if segue.identifier == AlarmIdentifier.Segue.editAlarm {
 
             alarmAddEditController.navigationItem.title = "Edit Alarm"
             guard let alarmToEdit = self.alarmToEdit else {

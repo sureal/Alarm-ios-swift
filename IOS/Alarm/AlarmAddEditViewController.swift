@@ -57,7 +57,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         } else {
             self.alarmModelController.alarmScheduler.recreateNotificationsFromDataModel()
         }
-        self.performSegue(withIdentifier: Identifier.UnwindSegue.saveAddEditAlarm, sender: self)
+        self.performSegue(withIdentifier: AlarmIdentifier.UnwindSegue.saveAddEditAlarm, sender: self)
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -79,12 +79,12 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
 
     func obtainTableViewCell() -> UITableViewCell {
 
-        if let cell = self.tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.setting) {
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: AlarmIdentifier.TableCell.setting) {
             return cell
         }
         return UITableViewCell(
             style: UITableViewCell.CellStyle.value1,
-            reuseIdentifier: Identifier.TableCell.setting)
+                reuseIdentifier: AlarmIdentifier.TableCell.setting)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -129,7 +129,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         } else if indexPath.section == 1 {
 
             cell = UITableViewCell(
-                    style: UITableViewCell.CellStyle.default, reuseIdentifier: Identifier.TableCell.setting)
+                    style: UITableViewCell.CellStyle.default, reuseIdentifier: AlarmIdentifier.TableCell.setting)
             cell.textLabel!.text = "Delete Alarm"
             cell.textLabel!.textAlignment = .center
             cell.textLabel!.textColor = UIColor.red
@@ -144,15 +144,15 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         if indexPath.section == 0 {
             switch indexPath.row {
             case 0:
-                performSegue(withIdentifier: Identifier.Segue.setWeekdaysRepeating, sender: self)
+                performSegue(withIdentifier: AlarmIdentifier.Segue.setWeekdaysRepeating, sender: self)
                 cell?.setSelected(true, animated: false)
                 cell?.setSelected(false, animated: false)
             case 1:
-                performSegue(withIdentifier: Identifier.Segue.editAlarmName, sender: self)
+                performSegue(withIdentifier: AlarmIdentifier.Segue.editAlarmName, sender: self)
                 cell?.setSelected(true, animated: false)
                 cell?.setSelected(false, animated: false)
             case 2:
-                performSegue(withIdentifier: Identifier.Segue.setAlarmSound, sender: self)
+                performSegue(withIdentifier: AlarmIdentifier.Segue.setAlarmSound, sender: self)
                 cell?.setSelected(true, animated: false)
                 cell?.setSelected(false, animated: false)
             default:
@@ -161,7 +161,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
         } else if indexPath.section == 1 {
             //delete alarm
             self.alarmModelController.removeAlarm(alarm: self.alarmToEdit)
-            performSegue(withIdentifier: Identifier.Segue.saveAddEditAlarm, sender: self)
+            performSegue(withIdentifier: AlarmIdentifier.Segue.saveAddEditAlarm, sender: self)
         }
 
     }
@@ -181,7 +181,7 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
 
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        if segue.identifier == Identifier.UnwindSegue.saveAddEditAlarm {
+        if segue.identifier == AlarmIdentifier.UnwindSegue.saveAddEditAlarm {
 
             if let destinationViewController = segue.destination as? MainAlarmViewController {
 
@@ -196,8 +196,8 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
                 return
             }
         }
-        
-        if segue.identifier == Identifier.Segue.setAlarmSound {
+
+        if segue.identifier == AlarmIdentifier.Segue.setAlarmSound {
 
             if let destinationViewController = segue.destination as? AlarmSoundEditViewController {
 
@@ -208,8 +208,8 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
             }
 
         }
-        
-        if segue.identifier == Identifier.Segue.editAlarmName {
+
+        if segue.identifier == AlarmIdentifier.Segue.editAlarmName {
 
             if let destinationViewController = segue.destination as? AlarmNameEditViewController {
 
@@ -218,8 +218,8 @@ class AlarmAddEditViewController: UIViewController, UITableViewDelegate, UITable
             }
 
         }
-        
-        if segue.identifier == Identifier.Segue.setWeekdaysRepeating {
+
+        if segue.identifier == AlarmIdentifier.Segue.setWeekdaysRepeating {
 
             if let destinationViewController = segue.destination as? WeekdaysViewController {
 

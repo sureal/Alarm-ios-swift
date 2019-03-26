@@ -104,7 +104,7 @@ class AlarmModelController: AlarmObserver {
                 return
             }
 
-            userDefaults.set(jsonString, forKey: Identifier.Persistence.alarmListPersistKey)
+            userDefaults.set(jsonString, forKey: AlarmIdentifier.Persistence.alarmListPersistKey)
             userDefaults.synchronize()
 
         } catch {
@@ -120,7 +120,7 @@ class AlarmModelController: AlarmObserver {
 
     private func loadAlarmsFromUserDefaults() -> [Alarm] {
 
-        let jsonString = UserDefaults.standard.string(forKey: Identifier.Persistence.alarmListPersistKey)
+        let jsonString = UserDefaults.standard.string(forKey: AlarmIdentifier.Persistence.alarmListPersistKey)
         guard let json = jsonString else {
             print("No alarms found in User Defaults")
             return []

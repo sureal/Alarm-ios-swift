@@ -36,24 +36,24 @@ class AlarmScheduler {
 
         // Specify the notification actions.
         let stopAction = UNNotificationAction(
-                identifier: Identifier.NotificationAction.stop,
+                identifier: AlarmIdentifier.NotificationAction.stop,
                 title: "OK",
                 options: [])
 
         let snoozeAction = UNNotificationAction(
-                identifier: Identifier.NotificationAction.snooze,
+                identifier: AlarmIdentifier.NotificationAction.snooze,
                 title: "Snooze",
                 options: [])
 
         // create categories
         let snoozeNotificationCategory = UNNotificationCategory(
-                identifier: Identifier.NotificationCategory.snooze,
+                identifier: AlarmIdentifier.NotificationCategory.snooze,
                 actions: [stopAction, snoozeAction],
                 intentIdentifiers: [],
                 options: [.customDismissAction])
 
         let noSnoozeNotificationCategory = UNNotificationCategory(
-                identifier: Identifier.NotificationCategory.noSnooze,
+                identifier: AlarmIdentifier.NotificationCategory.noSnooze,
                 actions: [stopAction],
                 intentIdentifiers: [],
                 options: [.customDismissAction])
@@ -271,9 +271,9 @@ class AlarmScheduler {
         // TODO: think about criticalSound
         content.sound = UNNotificationSound(named: UNNotificationSoundName(alarm.mediaLabel + ".mp3"))
         if alarm.snoozeEnabled {
-            content.categoryIdentifier = Identifier.NotificationCategory.snooze
+            content.categoryIdentifier = AlarmIdentifier.NotificationCategory.snooze
         } else {
-            content.categoryIdentifier = Identifier.NotificationCategory.noSnooze
+            content.categoryIdentifier = AlarmIdentifier.NotificationCategory.noSnooze
         }
 
         let userInfo = UserInfo()
