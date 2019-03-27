@@ -70,7 +70,8 @@ class MainAlarmViewController: UITableViewController {
             return cell
         }
 
-        return UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: AlarmIdentifier.TableCell.alarm)
+        return UITableViewCell(style: UITableViewCell.CellStyle.subtitle,
+                reuseIdentifier: AlarmIdentifier.TableCell.alarm)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

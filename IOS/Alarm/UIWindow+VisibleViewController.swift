@@ -9,11 +9,11 @@
 import Foundation
 import UIKit
 public extension UIWindow {
-    public var visibleViewController: UIViewController? {
+    var visibleViewController: UIViewController? {
         return UIWindow.getVisibleViewControllerFrom(sourceViewController: self.rootViewController)
     }
-    
-    public static func getVisibleViewControllerFrom(sourceViewController: UIViewController?) -> UIViewController? {
+
+    static func getVisibleViewControllerFrom(sourceViewController: UIViewController?) -> UIViewController? {
         if let navigationController = sourceViewController as? UINavigationController {
 
             return UIWindow.getVisibleViewControllerFrom(

@@ -52,8 +52,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Alarm/AlarmIdentifier.swift">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="25" column="63" lean-forward="true" selection-start-line="25" selection-start-column="63" selection-end-line="25" selection-end-column="63" />
+            <state relative-caret-position="153">
+              <caret line="17" column="55" selection-start-line="17" selection-start-column="55" selection-end-line="17" selection-end-column="55" />
             </state>
           </provider>
         </entry>
@@ -78,6 +78,11 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="swift-4.2" />
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -123,7 +128,6 @@
     </navigator>
     <panes>
       <pane id="Cidr.FilesView" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -169,6 +173,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -231,6 +236,7 @@
       <workItem from="1553619709838" duration="488000" />
       <workItem from="1553625022905" duration="1204000" />
       <workItem from="1553699004478" duration="491000" />
+      <workItem from="1553699667964" duration="548000" />
     </task>
     <task id="LOCAL-00001" summary="Fixes hundreds of swiftlint warning and errors. &#10;Refactoring ongoing towards clean code">
       <created>1551224508461</created>
@@ -253,11 +259,18 @@
       <option name="project" value="LOCAL" />
       <updated>1553620164434</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Update to Xcode 10.2 settings">
+      <created>1553699889703</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1553699889703</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="131879000" />
+    <option name="totallyTimeSpent" value="132427000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="820" extended-state="0" />
@@ -292,7 +305,8 @@
     <MESSAGE value="Update AppCode file" />
     <MESSAGE value="Refactor repreating Instance creation oder alarm model and scheduler and move to dependency injection based hand over of model controller" />
     <MESSAGE value="Renamed Identifier for less conflicts when merge this project with LightWake" />
-    <option name="LAST_COMMIT_MESSAGE" value="Renamed Identifier for less conflicts when merge this project with LightWake" />
+    <MESSAGE value="Update to Xcode 10.2 settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update to Xcode 10.2 settings" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -561,8 +575,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Alarm/AlarmIdentifier.swift">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="25" column="63" lean-forward="true" selection-start-line="25" selection-start-column="63" selection-end-line="25" selection-end-column="63" />
+        <state relative-caret-position="153">
+          <caret line="17" column="55" selection-start-line="17" selection-start-column="55" selection-end-line="17" selection-end-column="55" />
         </state>
       </provider>
     </entry>

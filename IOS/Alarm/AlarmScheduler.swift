@@ -325,9 +325,11 @@ class AlarmScheduler {
         printPendingNotificationRequests(context: "Before removal")
 
         //cancel all and register all is often more convenient
-        //UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: self.notificationRequestIds)
+//        UNUserNotificationCenter.current().removeDeliveredNotifications(
+//            withIdentifiers: self.notificationRequestIds)
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        //UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: self.notificationRequestIds)
+//        UNUserNotificationCenter.current().removePendingNotificationRequests(
+//            withIdentifiers:self.notificationRequestIds)
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
         self.notificationRequestIds.removeAll()

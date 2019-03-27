@@ -41,8 +41,8 @@ class WeekdaysViewController: UITableViewController {
         guard let weekday = Weekday(rawValue: indexPath.row + 1) else {
             return
         }
-        
-        if let index = weekdays.index(of: weekday) {
+
+        if let index = weekdays.firstIndex(of: weekday) {
             weekdays.remove(at: index)
             cell.setSelected(true, animated: true)
             cell.setSelected(false, animated: true)
