@@ -3,14 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="539d2360-dc22-456a-a941-86023ebb4cd2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Alarm-ios-swift.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm-ios-swift.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Alarm/AlarmAddEditViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmAddEditViewController.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Alarm/AlarmModelController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmModelController.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Alarm/AlarmScheduler.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmScheduler.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Alarm/AlarmSoundEditViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmSoundEditViewController.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Alarm/Identifier.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/AlarmIdentifier.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Alarm/MainAlarmViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/MainAlarmViewController.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Alarm/NotificationReceiver.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Alarm/NotificationReceiver.swift" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,7 +10,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="iphonesimulator_B94955D8-53E8-42FA-9CEE-2948888F7713" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="iphoneos_d2805de29cf97b4b043ba3519fe3748e16f987fa" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
@@ -60,8 +52,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Alarm/AlarmIdentifier.swift">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="14" column="47" lean-forward="true" selection-start-line="14" selection-start-column="47" selection-end-line="14" selection-end-column="47" />
+            <state relative-caret-position="273">
+              <caret line="25" column="63" lean-forward="true" selection-start-line="25" selection-start-column="63" selection-end-line="25" selection-end-column="63" />
             </state>
           </provider>
         </entry>
@@ -119,10 +111,10 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1428" />
-    <option name="height" value="819" />
+    <option name="width" value="1440" />
+    <option name="height" value="820" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -131,6 +123,7 @@
     </navigator>
     <panes>
       <pane id="Cidr.FilesView" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -176,7 +169,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -236,7 +228,9 @@
       <workItem from="1553373092298" duration="598000" />
       <workItem from="1553444665434" duration="582000" />
       <workItem from="1553457315431" duration="649000" />
-      <workItem from="1553619709838" duration="409000" />
+      <workItem from="1553619709838" duration="488000" />
+      <workItem from="1553625022905" duration="1204000" />
+      <workItem from="1553699004478" duration="491000" />
     </task>
     <task id="LOCAL-00001" summary="Fixes hundreds of swiftlint warning and errors. &#10;Refactoring ongoing towards clean code">
       <created>1551224508461</created>
@@ -252,14 +246,22 @@
       <option name="project" value="LOCAL" />
       <updated>1551655600839</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Renamed Identifier for less conflicts when merge this project with LightWake">
+      <created>1553620164433</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1553620164434</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="130105000" />
+    <option name="totallyTimeSpent" value="131879000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="820" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="820" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49284253" visible="true" weight="0.21530758" />
       <window_info id="Structure" order="1" sideWeight="0.50715744" side_tool="true" weight="0.21530758" />
@@ -289,7 +291,8 @@
     <MESSAGE value="Fixes hundreds of swiftlint warning and errors. &#10;Refactoring ongoing towards clean code" />
     <MESSAGE value="Update AppCode file" />
     <MESSAGE value="Refactor repreating Instance creation oder alarm model and scheduler and move to dependency injection based hand over of model controller" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor repreating Instance creation oder alarm model and scheduler and move to dependency injection based hand over of model controller" />
+    <MESSAGE value="Renamed Identifier for less conflicts when merge this project with LightWake" />
+    <option name="LAST_COMMIT_MESSAGE" value="Renamed Identifier for less conflicts when merge this project with LightWake" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -558,8 +561,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Alarm/AlarmIdentifier.swift">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="14" column="47" lean-forward="true" selection-start-line="14" selection-start-column="47" selection-end-line="14" selection-end-column="47" />
+        <state relative-caret-position="273">
+          <caret line="25" column="63" lean-forward="true" selection-start-line="25" selection-start-column="63" selection-end-line="25" selection-end-column="63" />
         </state>
       </provider>
     </entry>
