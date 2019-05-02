@@ -10,14 +10,14 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="iphoneos_d2805de29cf97b4b043ba3519fe3748e16f987fa" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="iphoneos_" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Alarm/MainAlarmViewController.swift">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2625">
-              <caret line="175" column="23" selection-start-line="175" selection-start-column="23" selection-end-line="175" selection-end-column="23" />
+            <state relative-caret-position="2640">
+              <caret line="176" column="23" selection-start-line="176" selection-start-column="23" selection-end-line="176" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -49,11 +49,32 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Alarm/AlarmIdentifier.swift">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="17" column="55" selection-start-line="17" selection-start-column="55" selection-end-line="17" selection-end-column="55" />
+            <state relative-caret-position="180">
+              <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Alarm/AppDelegate.swift">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Alarm/AlarmPlayer.swift">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="163">
+              <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+              <folding>
+                <element signature="e#107#124#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -127,6 +148,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Cidr.FilesView" />
       <pane id="ProjectPane">
         <subPane>
@@ -173,7 +195,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -236,7 +257,9 @@
       <workItem from="1553619709838" duration="488000" />
       <workItem from="1553625022905" duration="1204000" />
       <workItem from="1553699004478" duration="491000" />
-      <workItem from="1553699667964" duration="548000" />
+      <workItem from="1553699667964" duration="811000" />
+      <workItem from="1553784831957" duration="2733000" />
+      <workItem from="1554569096481" duration="112000" />
     </task>
     <task id="LOCAL-00001" summary="Fixes hundreds of swiftlint warning and errors. &#10;Refactoring ongoing towards clean code">
       <created>1551224508461</created>
@@ -266,17 +289,24 @@
       <option name="project" value="LOCAL" />
       <updated>1553699889703</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Upgrade to Swift 5 (wasn't hard)">
+      <created>1553700549616</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1553700549616</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="132427000" />
+    <option name="totallyTimeSpent" value="135535000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="820" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="820" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49284253" visible="true" weight="0.21530758" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49284253" visible="true" weight="0.21530758" />
       <window_info id="Structure" order="1" sideWeight="0.50715744" side_tool="true" weight="0.21530758" />
       <window_info id="Designer" order="2" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -288,7 +318,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="8" visible="true" weight="0.2239011" />
+      <window_info anchor="bottom" id="Version Control" order="8" visible="true" weight="0.2239011" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="11" weight="0.32921812" />
@@ -301,12 +331,14 @@
     </layout>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <MESSAGE value="Fixes hundreds of swiftlint warning and errors. &#10;Refactoring ongoing towards clean code" />
     <MESSAGE value="Update AppCode file" />
     <MESSAGE value="Refactor repreating Instance creation oder alarm model and scheduler and move to dependency injection based hand over of model controller" />
     <MESSAGE value="Renamed Identifier for less conflicts when merge this project with LightWake" />
     <MESSAGE value="Update to Xcode 10.2 settings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update to Xcode 10.2 settings" />
+    <MESSAGE value="Upgrade to Swift 5 (wasn't hard)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Upgrade to Swift 5 (wasn't hard)" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -314,7 +346,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Alarm/MainAlarmViewController.swift</url>
-          <line>214</line>
+          <line>215</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -324,12 +356,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Alarm/AlarmScheduler.swift</url>
-          <line>374</line>
+          <line>376</line>
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Alarm/AlarmScheduler.swift</url>
-          <line>370</line>
+          <line>372</line>
           <option name="timeStamp" value="85" />
         </line-breakpoint>
       </breakpoints>
@@ -383,16 +415,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2">
           <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Alarm/AlarmPlayer.swift">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
-          <folding>
-            <element signature="e#107#124#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -489,13 +511,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Alarm/AppDelegate.swift">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="66" column="29" selection-start-line="66" selection-start-column="29" selection-end-line="66" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/Resources/module_cache.zip!/ModuleCache/10B61/4.2.1/arm64/iphoneos12.1/Foundation/Foundation.swift">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="35505">
@@ -547,8 +562,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Alarm/MainAlarmViewController.swift">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2625">
-          <caret line="175" column="23" selection-start-line="175" selection-start-column="23" selection-end-line="175" selection-end-column="23" />
+        <state relative-caret-position="2640">
+          <caret line="176" column="23" selection-start-line="176" selection-start-column="23" selection-end-line="176" selection-end-column="23" />
         </state>
       </provider>
     </entry>
@@ -575,8 +590,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Alarm/AlarmIdentifier.swift">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="17" column="55" selection-start-line="17" selection-start-column="55" selection-end-line="17" selection-end-column="55" />
+        <state relative-caret-position="180">
+          <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Alarm/AppDelegate.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Alarm/AlarmPlayer.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+          <folding>
+            <element signature="e#107#124#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
